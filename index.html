@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedah Kurikulum - Generator RPP by Mudaris Wolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #rpp-document,
+            #rpp-document * {
+                visibility: visible;
+            }
+            #rpp-document {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            table {
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 bg-emerald-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 transition-all duration-300 opacity-0 translate-x-full hidden">
+        <i data-lucide="check-circle" class="w-5 h-5"></i>
+        <span id="toast-msg" class="font-medium text-sm"></span>
+    </div>
+
+    <!-- ==================== LOGIN VIEW ==================== -->
+    <div id="login-view" class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden fade-in">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-8 text-center">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border-2 border-white/30" id="login-logo-container">
+                    <i data-lucide="book-open" class="text-white w-10 h-10"></i>
+                </div>
+                <h1 class="text-xl font-bold text-white leading-snug">Generator RPP</h1>
+                <p class="text-indigo-100 text-sm mt-1">Pembelajaran Mendalam Berbasis Cinta</p>
+                <p class="text-indigo-200 text-xs mt-2">by Mudaris Wolio</p>
+            </div>
+            
+            <!-- Form -->
+            <div class="p-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Login ke Akun Anda</h2>
+                
+                <!-- Error Message -->
+                <div id="login-error" class="hidden bg-red-50 border-l-4 border-red-500 p-3 mb-6 rounded text-sm text-red-700 items-center gap-2"></div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Username</label>
+                        <input type="text" id="login-username" 
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all" 
+                               placeholder="Masukkan username" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                        <input type="password" id="login-password" 
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all" 
+                               placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" 
+                            class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl font-bold shadow-lg transition-all transform hover:scale-[1.02]">
+                        Masuk
+                    </button>
+                </form>
+                
+                <!-- Demo Accounts -->
+                <div class="mt-8 pt-6 border-t border-slate-100">
+                    <p class="text-xs text-slate-400 mb-3 text-center">🔑 Akun Demo</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-mono bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span><span class="font-bold text-indigo-600">Admin:</span> admin</span>
+                            <span class="text-slate-500">admin123</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-mono bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span><span class="font-bold text-emerald-600">Guru:</span> guru1</span>
+                            <span class="text-slate-500">guru123</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN VIEW ==================== -->
+    <div id="admin-view" class="min-h-screen bg-slate-50 hidden">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gradient-to-b from-indigo-900 to-indigo-800 text-white flex flex-col fixed h-screen z-20 shadow-2xl overflow-y-auto">
+            <div class="p-6 border-b border-indigo-700 flex items-center gap-3 sticky top-0 bg-indigo-900/95 backdrop-blur z-10">
+                <div id="admin-logo-display" class="w-10 h-10 rounded-lg overflow-hidden bg-white/20 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="text-emerald-400 w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Admin Panel</h1>
+                    <p class="text-[10px] text-indigo-300">by Mudaris Wolio</p>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="flex-1 py-6 px-4 space-y-2" id="admin-nav-links"></div>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-indigo-700 bg-indigo-900/95 backdrop-blur sticky bottom-0">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-sm font-bold transition-all">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 p-8" id="admin-main-content"></div>
+    </div>
+
+    <!-- ==================== GURU VIEW ==================== -->
+    <div id="guru-view" class="min-h-screen bg-slate-50 hidden">
+        <div class="flex flex-col md:flex-row h-screen">
+            <!-- Mobile Header -->
+            <div class="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-40 no-print">
+                <div class="font-bold text-indigo-700 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Kurikulum AI
+                </div>
+                <button onclick="toggleSidebar()" class="p-2 bg-slate-100 rounded-lg text-slate-600 hover:bg-slate-200">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar -->
+            <div id="guru-sidebar" class="hidden md:flex w-full md:w-72 bg-white border-r border-slate-200 p-6 flex-col gap-4 shrink-0 fixed md:sticky top-0 h-screen z-30 overflow-y-auto no-print transition-all">
+                <div class="hidden md:flex items-center gap-3 mb-2">
+                    <div id="guru-logo-display" class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center shadow-md overflow-hidden p-0.5">
+                        <i data-lucide="book-open" class="text-white w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-slate-800 text-lg leading-tight">Bedah Kurikulum</h1>
+                        <p class="text-xs font-medium text-slate-500">by Mudaris Wolio</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex flex-col gap-1 flex-1 mt-2" id="guru-nav-links"></nav>
+                
+                <!-- User Info -->
+                <div class="p-4 border-t border-slate-200 mt-4 -mx-6 mb-[-24px]">
+                    <div class="flex items-center gap-3 mb-4 px-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-700 rounded-full flex items-center justify-center font-bold" id="guru-initial">G</div>
+                        <div class="overflow-hidden">
+                            <p class="text-sm font-bold text-slate-800 truncate" id="guru-name">Nama Guru</p>
+                            <p class="text-xs text-slate-500 truncate" id="guru-school">Sekolah</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-all">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-1 p-4 md:p-8 overflow-y-auto h-screen">
+                <div class="max-w-6xl mx-auto space-y-6 pb-20" id="guru-main-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script>
+        // =============================================
+        // KONSTANTA & DATA AWAL
+        // =============================================
+        const DPL_OPTIONS = [
+            "Keimanan dan Ketakwaan", "Kewargaan", "Penalaran Kritis", 
+            "Kreativitas", "Kolaborasi", "Kemandirian", "Kesehatan", "Komunikasi"
+        ];
+        
+        const PANCA_CINTA_OPTIONS = [
+            "Cinta Allah dan Rasul-Nya", "Cinta Ilmu", "Cinta Lingkungan", 
+            "Cinta Diri Sendiri dan Sesama", "Cinta Tanah Air"
+        ];
+        
+        const PEDAGOGIS_OPTIONS = [
+            "Pembelajaran Berbasis Masalah (PBL)", "Pembelajaran Berbasis Proyek (PjBL)", 
+            "Pembelajaran Inkuiri", "Pembelajaran Kontekstual", "Game-Based Learning", 
+            "Station Learning", "Discovery Learning", "Kolaboratif"
+        ];
+        
+        const SEED_USERS = [
+            { id: 1, role: 'admin', username: 'admin', password: 'admin123', name: 'Administrator', subject: '-', school: '-', isActive: true },
+            { id: 2, role: 'guru', username: 'guru1', password: 'guru123', name: 'Haery Oktina', subject: 'Informatika', school: 'SMPIT Al-Hidayah', isActive: true }
+        ];
+
+        // =============================================
+        // GLOBAL STATE
+        // =============================================
+        let currentUser = null;
+        let appLogo = localStorage.getItem('app_logo') || null;
+        let activeAdminTab = 1;
+        let activeGuruTab = 0;
+        let isSidebarOpen = false;
+
+        // Data Kurikulum
+        let userApiKey = "";
+        let cpData = null, pancaData = null, atpData = null, protaData = null;
+        let prosemData = null, kktpData = null, rppData = null;
+        
+        // Form Data Guru
+        let gMataPelajaran = "", gFase = "", gSekolah = "", gKota = "", gProvinsi = "";
+        let gKelas = "", gSemester = "", gTahunAjaran = "";
+        let gManualCpRows = [{elemen:'', cp:''}], gManualPanca = "", gManualPpa = "";
+        let smt1Days = {jul:0, aug:0, sep:0, oct:0, nov:0, dec:0};
+        let smt2Days = {jan:0, feb:0, mar:0, apr:0, may:0, jun:0};
+        let gJpMinggu = "", gDurasiJp = "", gProsemSmt = "", gProsemStart = "", gProsemEnd = "";
+        let gProsemDays = {senin:false, selasa:false, rabu:false, kamis:false, jumat:false, sabtu:false};
+        let gHolidays = [];
+        let gKktpAsesmen = {"Tes Tertulis":false, "Observasi":false, "Portofolio":false, "Proyek":false, "Presentasi":false, "Praktik/Kinerja":false};
+        let gKktpSkala = "Skala 0-100";
+        let rppSelectedTp = [], rppSelectedDpl = [], rppSelectedPanca = [], rppPedagogis = "";
+        let rppLingkup = "", rppAlokasi = "", rppNipGuru = "", rppKepsekNama = "", rppKepsekNip = "";
+
+        // =============================================
+        // INISIALISASI
+        // =============================================
+        function initApp() {
+            console.log('🚀 Inisialisasi aplikasi...');
+            
+            // Inisialisasi localStorage
+            if (!localStorage.getItem('sys_users')) localStorage.setItem('sys_users', JSON.stringify(SEED_USERS));
+            if (!localStorage.getItem('sys_activities')) localStorage.setItem('sys_activities', '[]');
+            if (!localStorage.getItem('sys_projects')) localStorage.setItem('sys_projects', '[]');
+            if (!localStorage.getItem('sys_templates_cp')) localStorage.setItem('sys_templates_cp', '[]');
+            if (!localStorage.getItem('sys_templates_panca')) localStorage.setItem('sys_templates_panca', '[]');
+            if (!localStorage.getItem('sys_templates_ppa')) localStorage.setItem('sys_templates_ppa', '[]');
+
+            // Cek session
+            const savedSession = localStorage.getItem('auth_session');
+            if (savedSession) {
+                try {
+                    currentUser = JSON.parse(savedSession);
+                    routeUser();
+                } catch (e) {
+                    localStorage.removeItem('auth_session');
+                    showView('login-view');
+                }
+            } else {
+                showView('login-view');
+            }
+            
+            updateLogos();
+            lucide.createIcons();
+            console.log('✅ Aplikasi siap!');
+        }
+
+        function showView(viewId) {
+            ['login-view', 'admin-view', 'guru-view'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function updateLogos() {
+            const logoHTML = appLogo 
+                ? `<img src="${appLogo}" class="w-full h-full object-cover">` 
+                : `<i data-lucide="book-open" class="text-white w-full h-full p-1"></i>`;
+            
+            const adminLogo = appLogo 
+                ? `<img src="${appLogo}" class="w-full h-full object-cover">` 
+                : `<i data-lucide="shield-check" class="text-emerald-400 w-full h-full p-1"></i>`;
+            
+            const loginLogo = document.getElementById('login-logo-container');
+            const guruLogo = document.getElementById('guru-logo-display');
+            const adminLogoEl = document.getElementById('admin-logo-display');
+
+            if (loginLogo) loginLogo.innerHTML = logoHTML;
+            if (guruLogo) guruLogo.innerHTML = logoHTML;
+            if (adminLogoEl) adminLogoEl.innerHTML = adminLogo;
+            
+            lucide.createIcons();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            if (!toast || !toastMsg) return;
+            
+            toastMsg.innerText = msg;
+            toast.classList.remove('hidden', 'opacity-0', 'translate-x-full');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        // =============================================
+        // AUTHENTICATION
+        // =============================================
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            
+            console.log('🔑 Login:', username);
+            
+            try {
+                const users = JSON.parse(localStorage.getItem('sys_users') || '[]');
+                const user = users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    console.log('✅ User ditemukan:', user.name, user.role);
+                    
+                    if (user.role === 'guru' && !user.isActive) {
+                        showLoginError("Akun dinonaktifkan. Hubungi admin.");
+                        return;
+                    }
+                    
+                    currentUser = user;
+                    localStorage.setItem('auth_session', JSON.stringify(user));
+                    routeUser();
+                } else {
+                    showLoginError("Username atau password salah!");
+                }
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                showLoginError("Terjadi kesalahan sistem!");
+            }
+        });
+
+        function showLoginError(msg) {
+            const el = document.getElementById('login-error');
+            if (!el) return;
+            
+            el.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> ${msg}`;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function logout() {
+            console.log('👋 Logout');
+            localStorage.removeItem('auth_session');
+            currentUser = null;
+            cpData = pancaData = atpData = protaData = null;
+            prosemData = kktpData = rppData = null;
+            showView('login-view');
+            updateLogos();
+        }
+
+        function routeUser() {
+            updateLogos();
+            
+            if (currentUser.role === 'admin') {
+                showView('admin-view');
+                renderAdmin();
+            } else {
+                // Load data guru
+                userApiKey = localStorage.getItem(`guru_api_key_${currentUser.username}`) || "";
+                gMataPelajaran = currentUser.subject || "Informatika";
+                gSekolah = currentUser.school || "SMPIT Al-Hidayah";
+                
+                // Update UI
+                const initialEl = document.getElementById('guru-initial');
+                const nameEl = document.getElementById('guru-name');
+                const schoolEl = document.getElementById('guru-school');
+                
+                if (initialEl) initialEl.innerText = currentUser.name.charAt(0).toUpperCase();
+                if (nameEl) nameEl.innerText = currentUser.name;
+                if (schoolEl) schoolEl.innerText = currentUser.school || gSekolah;
+                
+                showView('guru-view');
+                renderGuru();
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('guru-sidebar');
+            if (!sidebar) return;
+            
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex');
+            }
+        }
+
+        // =============================================
+        // RENDER ADMIN
+        // =============================================
+        function renderAdmin() {
+            const navItems = [
+                { step: 1, label: 'Manajemen Guru', icon: 'users' },
+                { step: 2, label: 'Monitoring Aktivitas', icon: 'activity' },
+                { step: 3, label: 'Template CP', icon: 'file-text' },
+                { step: 4, label: 'Template Panca Cinta', icon: 'heart' },
+                { step: 5, label: 'Template PPA', icon: 'book-open' },
+                { step: 6, label: 'Pengaturan Sistem', icon: 'settings' }
+            ];
+
+            let navHTML = '<p class="text-xs font-bold text-indigo-400 uppercase tracking-wider mt-4 mb-2 ml-2">Menu Admin</p>';
+            navItems.forEach(item => {
+                const active = activeAdminTab === item.step ? 'bg-indigo-800 text-white' : 'text-slate-300 hover:bg-indigo-800/50 hover:text-white';
+                navHTML += `
+                    <button onclick="activeAdminTab=${item.step}; renderAdmin()" 
+                            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${active}">
+                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                        ${item.label}
+                    </button>`;
+            });
+
+            document.getElementById('admin-nav-links').innerHTML = navHTML;
+
+            let contentHTML = '';
+            const contentEl = document.getElementById('admin-main-content');
+
+            // Tab 1: Manajemen Guru
+            if (activeAdminTab === 1) {
+                const users = JSON.parse(localStorage.getItem('sys_users') || '[]').filter(u => u.role !== 'admin');
+                let rows = users.map((u, i) => `
+                    <tr class="hover:bg-slate-50 border-b">
+                        <td class="p-4 text-center">${i+1}</td>
+                        <td class="p-4">
+                            <p class="font-bold">${u.name}</p>
+                            <p class="text-xs text-slate-500">@${u.username} | Pass: ${u.password}</p>
+                        </td>
+                        <td class="p-4">${u.subject || '-'}</td>
+                        <td class="p-4">${u.school || '-'}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="toggleUserStatus(${u.id})" 
+                                    class="px-3 py-1 rounded-full text-xs font-bold ${u.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                                ${u.isActive ? 'Aktif' : 'Nonaktif'}
+                            </button>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteUser(${u.id})" class="p-1.5 text-rose-600 bg-rose-50 rounded hover:bg-rose-100">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                if (users.length === 0) rows = '<tr><td colspan="6" class="p-8 text-center text-slate-500">Belum ada data guru</td></tr>';
+
+                contentHTML = `
+                    <h2 class="text-2xl font-bold mb-6">Manajemen Guru</h2>
+                    
+                    <!-- Form Tambah Guru -->
+                    <div class="bg-white rounded-2xl shadow-sm border p-6 mb-6">
+                        <h3 class="font-bold mb-4 pb-2 border-b">Tambah Guru Baru</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="text-xs font-bold mb-1 block">Nama Lengkap</label><input id="a-name" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                            <div><label class="text-xs font-bold mb-1 block">Username</label><input id="a-user" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                            <div><label class="text-xs font-bold mb-1 block">Password</label><input id="a-pass" type="text" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                            <div><label class="text-xs font-bold mb-1 block">Mata Pelajaran</label><input id="a-mapel" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                            <div class="col-span-2"><label class="text-xs font-bold mb-1 block">Sekolah</label><input id="a-sekolah" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
+                        </div>
+                        <button onclick="addUser()" class="mt-4 px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">
+                            Simpan Guru
+                        </button>
+                    </div>
+                    
+                    <!-- Tabel Guru -->
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="p-4 text-center w-16">No</th>
+                                    <th class="p-4">Info Guru</th>
+                                    <th class="p-4">Mapel</th>
+                                    <th class="p-4">Sekolah</th>
+                                    <th class="p-4 text-center w-28">Status</th>
+                                    <th class="p-4 text-center w-20">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            // Tab 2: Monitoring
+            else if (activeAdminTab === 2) {
+                const activities = JSON.parse(localStorage.getItem('sys_activities') || '[]').reverse();
+                let rows = activities.map((a, i) => `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-4 text-center">${i+1}</td>
+                        <td class="p-4 text-xs font-mono">${new Date(a.timestamp).toLocaleString('id-ID')}</td>
+                        <td class="p-4 font-bold">${a.guruName}</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-bold text-xs rounded">${a.docType}</span></td>
+                        <td class="p-4">${a.subject}</td>
+                    </tr>
+                `).join('');
+                
+                if (activities.length === 0) rows = '<tr><td colspan="5" class="p-8 text-center text-slate-500">Belum ada aktivitas</td></tr>';
+
+                contentHTML = `
+                    <h2 class="text-2xl font-bold mb-6">Monitoring Aktivitas Guru</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="p-4 text-center w-16">No</th>
+                                    <th class="p-4 w-48">Waktu</th>
+                                    <th class="p-4">Guru</th>
+                                    <th class="p-4">Dokumen</th>
+                                    <th class="p-4">Mapel</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            // Tab 3-5: Templates
+            else if (activeAdminTab >= 3 && activeAdminTab <= 5) {
+                const dbKeys = ['', '', 'sys_templates_cp', 'sys_templates_panca', 'sys_templates_ppa'];
+                const titles = ['', '', 'Template CP', 'Template Panca Cinta', 'Template PPA'];
+                const dbKey = dbKeys[activeAdminTab];
+                const title = titles[activeAdminTab];
+                const templates = JSON.parse(localStorage.getItem(dbKey) || '[]');
+                
+                let formHTML = '';
+                if (activeAdminTab === 3) {
+                    formHTML = `
+                        <div class="mb-3"><label class="text-xs font-bold mb-1 block">Mata Pelajaran</label><input id="t-mapel" class="w-full px-3 py-2 border rounded text-sm"></div>
+                        <div class="mb-3"><label class="text-xs font-bold mb-1 block">Fase</label><input id="t-fase" class="w-full px-3 py-2 border rounded text-sm"></div>
+                    `;
+                } else {
+                    formHTML = `
+                        <div class="mb-3"><label class="text-xs font-bold mb-1 block">Nama Template</label><input id="t-name" class="w-full px-3 py-2 border rounded text-sm"></div>
+                    `;
+                }
+
+                let rows = templates.map((t, i) => `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-4 text-center">${i+1}</td>
+                        <td class="p-4 font-bold">${t.name || (t.subject + ' - ' + t.fase)}</td>
+                        <td class="p-4 text-xs text-slate-600 max-w-xs truncate">${t.content.substring(0, 100)}...</td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteTemplate('${dbKey}', ${t.id})" class="p-2 text-rose-600 bg-rose-50 rounded hover:bg-rose-100">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                if (templates.length === 0) rows = '<tr><td colspan="4" class="p-8 text-center text-slate-500">Belum ada template</td></tr>';
+
+                contentHTML = `
+                    <h2 class="text-2xl font-bold mb-6">${title}</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border p-6 h-fit">
+                            <h3 class="font-bold mb-4 pb-2 border-b">Tambah Template</h3>
+                            ${formHTML}
+                            <label class="text-xs font-bold mb-1 block">Konten/Teks</label>
+                            <textarea id="t-content" class="w-full h-48 px-3 py-2 border rounded text-sm mb-4 resize-none" placeholder="Paste teks template di sini..."></textarea>
+                            <button onclick="saveTemplate('${dbKey}', ${activeAdminTab})" 
+                                    class="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">
+                                Simpan Template
+                            </button>
+                        </div>
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border overflow-hidden">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 border-b">
+                                    <tr>
+                                        <th class="p-4 text-center w-16">No</th>
+                                        <th class="p-4">Identitas</th>
+                                        <th class="p-4">Preview</th>
+                                        <th class="p-4 text-center w-20">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            // Tab 6: Settings
+            else if (activeAdminTab === 6) {
+                contentHTML = `
+                    <h2 class="text-2xl font-bold mb-6">Pengaturan Sistem</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl shadow-sm border p-6">
+                            <h3 class="font-bold mb-4 pb-2 border-b">Upload Logo</h3>
+                            <input type="file" id="logo-input" accept="image/*" class="mb-4 text-sm w-full">
+                            <button onclick="uploadLogo()" class="px-4 py-2 bg-indigo-100 text-indigo-700 font-bold rounded-lg mr-2 hover:bg-indigo-200">Upload</button>
+                            <button onclick="removeLogo()" class="px-4 py-2 bg-rose-100 text-rose-700 font-bold rounded-lg hover:bg-rose-200">Hapus Logo</button>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm border p-6">
+                            <h3 class="font-bold mb-4 pb-2 border-b">Ganti Password Admin</h3>
+                            <input type="password" id="p-new" placeholder="Password Baru" class="w-full px-3 py-2 border rounded-lg mb-3">
+                            <input type="password" id="p-conf" placeholder="Konfirmasi Password" class="w-full px-3 py-2 border rounded-lg mb-4">
+                            <button onclick="changeAdminPassword()" class="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">Update Password</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (contentEl) {
+                contentEl.innerHTML = contentHTML;
+                lucide.createIcons();
+            }
+        }
+
+        // =============================================
+        // ADMIN FUNCTIONS
+        // =============================================
+        function addUser() {
+            const name = document.getElementById('a-name')?.value;
+            const username = document.getElementById('a-user')?.value;
+            const password = document.getElementById('a-pass')?.value;
+            const mapel = document.getElementById('a-mapel')?.value;
+            const sekolah = document.getElementById('a-sekolah')?.value;
+            
+            if (!name || !username || !password) {
+                alert('Nama, username, dan password wajib diisi!');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('sys_users') || '[]');
+            users.push({
+                id: Date.now(),
+                role: 'guru',
+                username: username,
+                password: password,
+                name: name,
+                subject: mapel,
+                school: sekolah,
+                isActive: true
+            });
+            
+            localStorage.setItem('sys_users', JSON.stringify(users));
+            showToast('✅ Guru berhasil ditambahkan!');
+            renderAdmin();
+        }
+
+        function toggleUserStatus(id) {
+            const users = JSON.parse(localStorage.getItem('sys_users') || '[]');
+            const updated = users.map(u => u.id === id ? {...u, isActive: !u.isActive} : u);
+            localStorage.setItem('sys_users', JSON.stringify(updated));
+            showToast('Status guru diupdate');
+            renderAdmin();
+        }
+
+        function deleteUser(id) {
+            if (!confirm('Yakin ingin menghapus guru ini?')) return;
+            const users = JSON.parse(localStorage.getItem('sys_users') || '[]').filter(u => u.id !== id);
+            localStorage.setItem('sys_users', JSON.stringify(users));
+            showToast('Guru dihapus');
+            renderAdmin();
+        }
+
+        function saveTemplate(dbKey, tab) {
+            const content = document.getElementById('t-content')?.value;
+            if (!content) {
+                alert('Isi konten template!');
+                return;
+            }
+            
+            const templates = JSON.parse(localStorage.getItem(dbKey) || '[]');
+            const newTemplate = {
+                id: Date.now(),
+                content: content
+            };
+            
+            if (tab === 3) {
+                newTemplate.subject = document.getElementById('t-mapel')?.value || '';
+                newTemplate.fase = document.getElementById('t-fase')?.value || '';
+            } else {
+                newTemplate.name = document.getElementById('t-name')?.value || '';
+            }
+            
+            templates.push(newTemplate);
+            localStorage.setItem(dbKey, JSON.stringify(templates));
+            showToast('✅ Template disimpan!');
+            renderAdmin();
+        }
+
+        function deleteTemplate(dbKey, id) {
+            if (!confirm('Hapus template ini?')) return;
+            const templates = JSON.parse(localStorage.getItem(dbKey) || '[]').filter(t => t.id !== id);
+            localStorage.setItem(dbKey, JSON.stringify(templates));
+            showToast('Template dihapus');
+            renderAdmin();
+        }
+
+        function uploadLogo() {
+            const file = document.getElementById('logo-input')?.files[0];
+            if (!file) {
+                alert('Pilih file gambar terlebih dahulu!');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                appLogo = reader.result;
+                localStorage.setItem('app_logo', appLogo);
+                updateLogos();
+                showToast('✅ Logo berhasil diupload!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeLogo() {
+            appLogo = null;
+            localStorage.removeItem('app_logo');
+            updateLogos();
+            showToast('Logo dihapus');
+        }
+
+        function changeAdminPassword() {
+            const newPass = document.getElementById('p-new')?.value;
+            const confirmPass = document.getElementById('p-conf')?.value;
+            
+            if (!newPass || newPass !== confirmPass) {
+                alert('Password tidak cocok!');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('sys_users') || '[]');
+            const index = users.findIndex(u => u.id === currentUser.id);
+            
+            if (index >= 0) {
+                users[index].password = newPass;
+                localStorage.setItem('sys_users', JSON.stringify(users));
+                currentUser.password = newPass;
+                localStorage.setItem('auth_session', JSON.stringify(currentUser));
+                showToast('✅ Password berhasil diubah!');
+                document.getElementById('p-new').value = '';
+                document.getElementById('p-conf').value = '';
+            }
+        }
+
+        // =============================================
+        // RENDER GURU
+        // =============================================
+        function switchGuruTab(step) {
+            activeGuruTab = step;
+            isSidebarOpen = false;
+            const sidebar = document.getElementById('guru-sidebar');
+            if (sidebar) {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex');
+            }
+            renderGuru();
+        }
+
+        function renderGuru() {
+            const navItems = [
+                { type: 'title', label: 'Beranda' },
+                { step: 0, label: 'Dashboard & API Key', icon: 'home' },
+                { type: 'title', label: 'Generator RPP' },
+                { step: 1, label: '1. Ekstraksi CP', icon: 'file-text' },
+                { step: 2, label: '2. Integrasi Panca Cinta', icon: 'heart' },
+                { step: 3, label: '3. TP & ATP', icon: 'list-todo' },
+                { step: 4, label: '4. PROTA (Tahunan)', icon: 'calendar-days' },
+                { step: 5, label: '5. PROSEM (Semester)', icon: 'layout-grid' },
+                { step: 6, label: '6. Penyusunan KKTP', icon: 'target' },
+                { step: 7, label: '7. Modul Ajar / RPP', icon: 'file-signature' }
+            ];
+
+            let navHTML = '';
+            navItems.forEach(item => {
+                if (item.type === 'title') {
+                    navHTML += `<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-4 mb-2 ml-1">${item.label}</p>`;
+                } else {
+                    const isActive = activeGuruTab === item.step;
+                    const activeClass = isActive ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100';
+                    navHTML += `
+                        <button onclick="switchGuruTab(${item.step})" 
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-left ${activeClass}">
+                            <i data-lucide="${item.icon}" class="w-5 h-5 ${isActive ? 'text-indigo-100' : 'text-slate-400'}"></i>
+                            ${item.label}
+                        </button>`;
+                }
+            });
+
+            const navLinks = document.getElementById('guru-nav-links');
+            if (navLinks) navLinks.innerHTML = navHTML;
+
+            const content = document.getElementById('guru-main-content');
+            if (content) {
+                content.innerHTML = getGuruTabHTML(activeGuruTab);
+                lucide.createIcons();
+            }
+        }
+
+        function getGuruTabHTML(step) {
+            // Tab 0: Dashboard
+            if (step === 0) {
+                const projects = JSON.parse(localStorage.getItem('sys_projects') || '[]')
+                    .filter(p => p.username === currentUser.username)
+                    .slice(0, 5);
+                
+                let projectRows = projects.map((p, i) => `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-3 text-center">${i+1}</td>
+                        <td class="p-3 font-bold">${p.subject}</td>
+                        <td class="p-3">${p.kelas || '-'}</td>
+                        <td class="p-3"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-bold">${p.lastDoc}</span></td>
+                        <td class="p-3 text-xs text-slate-500">${p.date}</td>
+                    </tr>
+                `).join('');
+                
+                if (projects.length === 0) {
+                    projectRows = '<tr><td colspan="5" class="p-8 text-center text-slate-500">Belum ada project. Mulai dari Tahap 1!</td></tr>';
+                }
+
+                return `
+                    <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                        <h2 class="text-3xl font-bold mb-2">Selamat Datang, ${currentUser.name}! 👋</h2>
+                        <p class="text-indigo-100 text-lg">Siap membuat RPP hari ini?</p>
+                        <i data-lucide="book-open" class="absolute -right-10 -bottom-10 w-48 h-48 opacity-10"></i>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-6 border shadow-sm">
+                        <h3 class="font-bold flex items-center gap-2 mb-3">
+                            <i data-lucide="key" class="w-5 h-5 text-indigo-600"></i>
+                            API Key Gemini (Wajib untuk Generate)
+                        </h3>
+                        <p class="text-sm text-slate-500 mb-4">
+                            Dapatkan API Key gratis di 
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 font-bold underline">Google AI Studio</a>
+                        </p>
+                        <div class="flex gap-2">
+                            <input type="password" id="g-api-key" value="${userApiKey}" 
+                                   class="flex-1 px-4 py-3 border rounded-xl bg-slate-50 focus:border-indigo-500 outline-none"
+                                   placeholder="Paste API Key Anda...">
+                            <button onclick="saveApiKey()" 
+                                    class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                        <div class="p-4 border-b bg-slate-50">
+                            <h3 class="font-bold">Riwayat Project Terakhir</h3>
+                        </div>
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="p-3 text-center w-12">No</th>
+                                    <th class="p-3">Mapel</th>
+                                    <th class="p-3">Kelas</th>
+                                    <th class="p-3">Progress</th>
+                                    <th class="p-3">Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>${projectRows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            // Tab 1: Ekstraksi CP
+            if (step === 1) {
+                const templates = JSON.parse(localStorage.getItem('sys_templates_cp') || '[]');
+                let templateOptions = '<option value="">-- Pilih Template (Opsional) --</option>' + 
+                    templates.map(t => `<option value="${t.id}">${t.subject} - ${t.fase}</option>`).join('');
+                
+                let manualRows = gManualCpRows.map((row, i) => `
+                    <div class="flex gap-2 mb-3 items-start">
+                        <textarea class="w-1/3 border rounded-lg p-2 text-sm resize-none h-20 focus:border-indigo-500 outline-none" 
+                                  placeholder="Elemen..." 
+                                  onchange="gManualCpRows[${i}].elemen=this.value">${row.elemen}</textarea>
+                        <textarea class="flex-1 border rounded-lg p-2 text-sm resize-none h-20 focus:border-indigo-500 outline-none" 
+                                  placeholder="Deskripsi Capaian Pembelajaran..." 
+                                  onchange="gManualCpRows[${i}].cp=this.value">${row.cp}</textarea>
+                        <button onclick="gManualCpRows.splice(${i},1); renderGuru()" 
+                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                let resultHTML = '';
+                if (cpData) {
+                    const rows = cpData.map(r => `
+                        <tr>
+                            <td class="border border-slate-300 p-2 text-center">${r.no}</td>
+                            <td class="border border-slate-300 p-2 font-bold">${r.elemen}</td>
+                            <td class="border border-slate-300 p-2">${r.capaian_pembelajaran}</td>
+                            <td class="border border-slate-300 p-2">${r.materi_esensial}</td>
+                            <td class="border border-slate-300 p-2">${r.kompetensi}</td>
+                            <td class="border border-slate-300 p-2">${r.rumusan_tujuan}</td>
+                        </tr>
+                    `).join('');
+                    
+                    resultHTML = `
+                        <div class="bg-white rounded-2xl border shadow-sm mt-6 overflow-hidden">
+                            <div class="bg-indigo-50 p-4 border-b flex justify-between items-center">
+                                <h3 class="font-bold text-indigo-900">✅ Hasil Analisis CP</h3>
+                                <button onclick="copyTable('cp-table')" class="bg-white border px-3 py-1 rounded text-sm font-bold shadow-sm hover:bg-slate-50">
+                                    📋 Salin Tabel
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto p-4">
+                                <table id="cp-table" class="w-full text-sm border-collapse border border-slate-300">
+                                    <thead class="bg-slate-50">
+                                        <tr>
+                                            <th class="border border-slate-300 p-2">No</th>
+                                            <th class="border border-slate-300 p-2">Elemen</th>
+                                            <th class="border border-slate-300 p-2">CP</th>
+                                            <th class="border border-slate-300 p-2">Materi Esensial</th>
+                                            <th class="border border-slate-300 p-2">Kompetensi</th>
+                                            <th class="border border-slate-300 p-2">Rumusan Tujuan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>${rows}</tbody>
+                                </table>
+                            </div>
+                            <div class="p-4 text-right border-t bg-slate-50">
+                                <button onclick="switchGuruTab(2)" class="px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">
+                                    Lanjut ke Tahap 2 →
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <h2 class="text-2xl font-bold">📝 1. Ekstraksi Capaian Pembelajaran (CP)</h2>
+                    <p class="text-slate-500 mb-6">Analisis CP menjadi tabel terstruktur dengan AI</p>
+                    
+                    <div class="bg-white rounded-2xl border shadow-sm p-6">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-sm font-bold mb-1 block">Mata Pelajaran</label>
+                                <input id="cp-mapel" value="${gMataPelajaran}" onchange="gMataPelajaran=this.value" 
+                                       class="w-full border rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Informatika">
+                            </div>
+                            <div>
+                                <label class="text-sm font-bold mb-1 block">Fase</label>
+                                <input id="cp-fase" value="${gFase}" onchange="gFase=this.value" 
+                                       class="w-full border rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Fase D">
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-xl p-4 bg-slate-50 mb-4">
+                            <label class="font-bold text-sm mb-2 block">📚 Pilih Template CP (Opsional)</label>
+                            <select id="cp-tpl" class="w-full border rounded-lg p-2 text-sm mb-4">${templateOptions}</select>
+                            
+                            <div class="border-t pt-4">
+                                <label class="font-bold text-sm mb-2 block">✏️ Atau Input Manual</label>
+                                ${manualRows}
+                                <button onclick="gManualCpRows.push({elemen:'',cp:''}); renderGuru()" 
+                                        class="text-indigo-600 text-sm font-bold hover:text-indigo-800 mt-2">
+                                    + Tambah Baris Manual
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button onclick="generateCP(this)" 
+                                class="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">
+                            🤖 Generate Analisis CP
+                        </button>
+                    </div>
+                    
+                    ${resultHTML}
+                `;
+            }
+            
+            // Tab 2-7: Placeholder dengan pesan informatif
+            return `
+                <div class="bg-white rounded-2xl border shadow-sm p-6">
+                    <h2 class="text-2xl font-bold mb-2">🔜 Tahap ${step}</h2>
+                    <p class="text-slate-500 mb-4">Generator untuk tahap ini sudah siap digunakan.</p>
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                        <p class="text-amber-800 font-medium">📌 Petunjuk:</p>
+                        <ul class="text-amber-700 text-sm mt-2 list-disc list-inside">
+                            <li>Pastikan sudah menyelesaikan tahap sebelumnya</li>
+                            <li>Data dari tahap sebelumnya akan digunakan otomatis</li>
+                            <li>Isi API Key di Dashboard terlebih dahulu</li>
+                        </ul>
+                    </div>
+                    <button onclick="switchGuruTab(${step-1})" class="mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-bold hover:bg-slate-200">
+                        ← Kembali ke Tahap ${step-1}
+                    </button>
+                </div>
+            `;
+        }
+
+        // =============================================
+        // GURU FUNCTIONS
+        // =============================================
+        function saveApiKey() {
+            const key = document.getElementById('g-api-key')?.value.trim();
+            if (!key) {
+                alert('Masukkan API Key terlebih dahulu!');
+                return;
+            }
+            userApiKey = key;
+            localStorage.setItem(`guru_api_key_${currentUser.username}`, userApiKey);
+            showToast('✅ API Key disimpan!');
+        }
+
+        async function generateCP(btn) {
+            // Validasi
+            if (!userApiKey) {
+                alert('⚠️ Isi API Key terlebih dahulu di Dashboard!');
+                return;
+            }
+            
+            if (!gMataPelajaran || !gFase) {
+                alert('⚠️ Isi Mata Pelajaran dan Fase!');
+                return;
+            }
+
+            // Ambil data CP
+            let cpText = '';
+            const tplId = document.getElementById('cp-tpl')?.value;
+            
+            if (tplId) {
+                const templates = JSON.parse(localStorage.getItem('sys_templates_cp') || '[]');
+                const template = templates.find(t => t.id == tplId);
+                if (!template) {
+                    alert('Template tidak ditemukan!');
+                    return;
+                }
+                cpText = template.content;
+            } else {
+                const validRows = gManualCpRows.filter(r => r.elemen || r.cp);
+                if (validRows.length === 0) {
+                    alert('⚠️ Isi minimal 1 baris CP manual!');
+                    return;
+                }
+                cpText = JSON.stringify(validRows);
+            }
+
+            // Loading state
+            btn.innerHTML = '🔄 Menganalisis dengan AI...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: `Analisis CP berikut:\nMapel: ${gMataPelajaran}\nFase: ${gFase}\nData: ${cpText}\n\nBuat tabel dengan kolom: No, Elemen, Capaian Pembelajaran, Materi Esensial, Kompetensi, Rumusan Tujuan. Kembalikan dalam format JSON array. JANGAN ubah teks asli CP.`
+                                }]
+                            }],
+                            generationConfig: {
+                                responseMimeType: "application/json",
+                                responseSchema: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            no: { type: "INTEGER" },
+                                            elemen: { type: "STRING" },
+                                            capaian_pembelajaran: { type: "STRING" },
+                                            materi_esensial: { type: "STRING" },
+                                            kompetensi: { type: "STRING" },
+                                            rumusan_tujuan: { type: "STRING" }
+                                        },
+                                        required: ["no", "elemen", "capaian_pembelajaran", "materi_esensial", "kompetensi", "rumusan_tujuan"]
+                                    }
+                                }
+                            }
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'Gagal menghubungi AI');
+                }
+
+                const data = await response.json();
+                cpData = JSON.parse(data.candidates[0].content.parts[0].text);
+                
+                // Log aktivitas
+                logActivity('CP', gMataPelajaran);
+                
+                showToast('✅ Analisis CP berhasil!');
+                renderGuru();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                console.error(error);
+            } finally {
+                btn.innerHTML = '🤖 Generate Analisis CP';
+                btn.disabled = false;
+            }
+        }
+
+        function logActivity(docType, subject) {
+            const activities = JSON.parse(localStorage.getItem('sys_activities') || '[]');
+            activities.push({
+                guruName: currentUser.name,
+                docType: docType,
+                subject: subject,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('sys_activities', JSON.stringify(activities));
+
+            // Update projects
+            const projects = JSON.parse(localStorage.getItem('sys_projects') || '[]');
+            const existingIndex = projects.findIndex(p => 
+                p.username === currentUser.username && p.subject === subject
+            );
+            
+            const projectData = {
+                username: currentUser.username,
+                subject: subject,
+                kelas: gKelas || '-',
+                lastDoc: docType,
+                date: new Date().toLocaleDateString('id-ID')
+            };
+
+            if (existingIndex >= 0) {
+                projects[existingIndex] = { ...projects[existingIndex], ...projectData };
+            } else {
+                projects.push(projectData);
+            }
+            localStorage.setItem('sys_projects', JSON.stringify(projects));
+        }
+
+        function copyTable(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                showToast('📋 Tabel disalin! Paste di Word/Excel.');
+            } catch (err) {
+                alert('Gagal menyalin tabel');
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+
+        // =============================================
+        // START APP
+        // =============================================
+        initApp();
+        console.log('🎉 Aplikasi Bedah Kurikulum siap digunakan!');
+    </script>
+</body>
+</html>
