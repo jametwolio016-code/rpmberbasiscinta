@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator RPP Berbasis Cinta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cinta: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .sticky-col-1, .sticky-col-2, .sticky-col-3, .sticky-col-4 { position: sticky; z-index: 10; background-color: inherit; }
+        .sticky-col-1 { left: 0px; border-right: 1px solid #e2e8f0; }
+        .sticky-col-2 { left: 48px; border-right: 1px solid #e2e8f0; }
+        .sticky-col-3 { left: 248px; border-right: 1px solid #e2e8f0; }
+        .sticky-col-4 { left: 368px; border-right: 2px solid #cbd5e1; }
+
+        html.dark body { background-color: #0f172a; color: #f8fafc; }
+        html.dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
+        html.dark .bg-slate-50, html.dark .bg-cinta-50 { background-color: #0f172a !important; border-color: #334155 !important; }
+        html.dark input, html.dark textarea, html.dark select { background-color: #0f172a !important; color: #fff !important; border-color: #334155 !important; }
+        html.dark thead, html.dark .bg-slate-100 { background-color: #334155 !important; color: #fff !important; }
+        @media print {
+            .no-print { display: none !important; }
+            @page { size: A4; margin: 1.5cm; }
+            body { background: white !important; color: black !important; }
+            table, th, td { border: 1px solid black !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex flex-col overflow-hidden transition-colors duration-200">
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view" class="absolute inset-0 z-50 bg-slate-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md fade-in border border-slate-200">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 bg-cinta-100 rounded-full mb-4">
+                    <img id="login-logo-img" src="" alt="Logo" class="h-14 w-auto mx-auto hidden object-contain">
+                    <svg id="login-logo-svg" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cinta-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">Generator RPP</h1>
+                <p class="text-sm text-cinta-600 font-medium">Pembelajaran Mendalam Berbasis Cinta</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">by Mudaris Wolio</p>
+            </div>
+            <form id="login-form" class="space-y-5">
+                <div id="login-error" class="hidden bg-red-100 text-red-600 p-3 rounded-lg text-sm text-center">Username atau password salah!</div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-1">Username</label><input type="text" id="username" class="w-full px-4 py-2 border border-slate-300 rounded-lg outline-none" required></div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-1">Password</label><input type="password" id="password" class="w-full px-4 py-2 border border-slate-300 rounded-lg outline-none" required></div>
+                <button type="submit" class="w-full bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-md">Login</button>
+            </form>
+            <div class="mt-6 text-xs text-slate-500 text-center border-t pt-4">
+                <p><strong>Akun Demo:</strong></p><p>Admin: admin / admin123</p><p>Guru: guru1 / guru123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app" class="hidden flex-1 flex h-screen overflow-hidden fade-in">
+        <!-- SIDEBAR -->
+        <aside id="app-sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col absolute md:relative z-40 h-full transition-transform transform -translate-x-full md:translate-x-0 shadow-lg md:shadow-none no-print">
+            <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img id="sidebar-logo-img" src="" alt="Logo" class="h-8 w-auto hidden object-contain">
+                    <svg id="sidebar-logo-svg" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cinta-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    <div>
+                        <h1 class="font-bold text-slate-800 leading-tight">Gen RPP</h1>
+                        <p class="text-[10px] text-cinta-600 font-semibold">Berbasis Cinta</p>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500">by Mudaris Wolio</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('app-sidebar').classList.add('-translate-x-full')" class="md:hidden text-slate-500 text-xl">&times;</button>
+            </div>
+
+            <!-- MENU GURU -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-1 hidden" id="sidebar-menu-guru">
+                <button onclick="switchTab('ekstraksi')" id="sb-btn-ekstraksi" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>1. Ekstraksi CP</span><span id="ind-cp" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('integrasi')" id="sb-btn-integrasi" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>2. Integrasi Panca Cinta</span><span id="ind-integrasi" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('tpatp')" id="sb-btn-tpatp" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>3. TP & ATP</span><span id="ind-tpatp" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('prota')" id="sb-btn-prota" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>4. PROTA</span><span id="ind-prota" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('prosem')" id="sb-btn-prosem" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>5. PROSEM</span><span id="ind-prosem" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('kktp')" id="sb-btn-kktp" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>6. KKTP</span><span id="ind-kktp" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('rpp')" id="sb-btn-rpp" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700"><span>7. Modul Ajar/RPP</span><span id="ind-rpp" class="text-green-600 font-bold text-xs"></span></button>
+                <button onclick="switchTab('riwayat')" id="sb-btn-riwayat" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700 mt-4 border-t border-slate-200 pt-3">
+                    <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Riwayat & API Key</span>
+                </button>
+            </div>
+
+            <!-- MENU ADMIN (5 menu) -->
+            <div class="flex-1 overflow-y-auto p-3 space-y-1 hidden" id="sidebar-menu-admin">
+                <button onclick="switchAdminTab('admin-cp')" id="sb-admin-btn-cp" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700">
+                    <span>1. Tambah Template CP</span><span class="text-xs text-slate-400" id="admin-cp-count">0</span>
+                </button>
+                <button onclick="switchAdminTab('admin-panca')" id="sb-admin-btn-panca" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700">
+                    <span>2. Tambah Template Integrasi KBC</span><span class="text-xs text-slate-400" id="admin-panca-count">0</span>
+                </button>
+                <button onclick="switchAdminTab('admin-ppa')" id="sb-admin-btn-ppa" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700">
+                    <span>3. Tambah Template PPA</span><span class="text-xs text-slate-400" id="admin-ppa-count">0</span>
+                </button>
+                <button onclick="switchAdminTab('admin-guru')" id="sb-admin-btn-guru" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700">
+                    <span>4. Tambah Akun Guru</span><span class="text-xs text-slate-400" id="admin-guru-count">0</span>
+                </button>
+                <button onclick="switchAdminTab('admin-logo')" id="sb-admin-btn-logo" class="w-full text-left px-3 py-2.5 rounded-md text-sm font-medium hover:bg-slate-100 flex justify-between items-center text-slate-700">
+                    <span>5. Pengaturan Logo</span>
+                </button>
+            </div>
+
+            <div class="p-4 border-t border-slate-200">
+                <div class="mb-3 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-cinta-100 flex items-center justify-center text-cinta-600 font-bold text-xs" id="user-avatar-initial">U</div>
+                    <div><div id="user-display-name" class="text-sm font-bold text-slate-800">Nama User</div><div id="user-display-role" class="text-[10px] text-cinta-600 uppercase">Role</div></div>
+                </div>
+                <button id="btn-logout" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-md text-sm font-medium transition-colors border border-slate-200">Logout</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- NAVBAR -->
+            <nav class="bg-white shadow-sm border-b border-slate-200 z-30 no-print">
+                <div class="px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+                    <div class="flex items-center gap-3">
+                        <button onclick="document.getElementById('app-sidebar').classList.toggle('-translate-x-full')" class="md:hidden text-slate-500 p-2 rounded bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
+                        <span class="font-bold text-lg text-slate-800" id="top-nav-title">Dashboard Admin</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="btn-theme-toggle" class="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors" title="Toggle Tema">🌙</button>
+                    </div>
+                </div>
+            </nav>
+
+            <main class="flex-1 overflow-y-auto w-full p-4 sm:p-6 lg:p-8">
+                <!-- ADMIN VIEW -->
+                <div id="admin-view" class="hidden space-y-6 fade-in">
+                    <!-- Tab Admin 1: Template CP -->
+                    <div id="admin-tab-cp" class="hidden">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-semibold mb-4">Tambah Template CP</h3>
+                            <form id="form-cp" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-sm font-medium mb-1">Mata Pelajaran</label><input type="text" id="input-mapel" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                    <div><label class="block text-sm font-medium mb-1">Fase</label><select id="input-fase" class="w-full px-4 py-2 border rounded-lg outline-none" required><option value="" disabled selected>Pilih Fase</option><option value="A">A (SD 1-2)</option><option value="B">B (SD 3-4)</option><option value="C">C (SD 5-6)</option><option value="D">D (SMP)</option><option value="E">E (SMA 10)</option><option value="F">F (SMA 11-12)</option></select></div>
+                                </div>
+                                <div><label class="block text-sm font-medium mb-1">CP Umum</label><textarea id="input-cp-umum" rows="3" class="w-full px-4 py-2 border rounded-lg outline-none resize-none" placeholder="Masukkan CP Umum / deskripsi umum..."></textarea></div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Elemen & Deskripsi CP</label>
+                                    <div class="border rounded-lg overflow-hidden">
+                                        <table class="w-full text-left">
+                                            <thead class="bg-slate-50 border-b">
+                                                <tr>
+                                                    <th class="py-2.5 px-3 font-medium text-sm w-1/3">Elemen</th>
+                                                    <th class="py-2.5 px-3 font-medium text-sm w-2/3">Deskripsi CP</th>
+                                                    <th class="py-2.5 px-3 font-medium text-sm text-center w-12">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="admin-cp-elemen-body">
+                                                <tr class="border-b">
+                                                    <td class="p-2"><input type="text" class="input-elemen-cp w-full border rounded px-2 py-1.5 text-sm" placeholder="Nama Elemen"></td>
+                                                    <td class="p-2"><textarea class="input-deskripsi-cp w-full border rounded px-2 py-1.5 text-sm resize-none" rows="2" placeholder="Deskripsi CP..."></textarea></td>
+                                                    <td class="p-2 text-center"><button type="button" class="btn-hapus-baris-cp text-red-500 font-bold text-lg">&times;</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" id="btn-tambah-elemen-cp" class="mt-3 text-sm text-cinta-600 font-semibold hover:text-cinta-700">+ Tambah Elemen</button>
+                                </div>
+                                <div class="flex justify-end border-t pt-4"><button type="submit" class="bg-cinta-600 hover:bg-cinta-700 text-white font-medium py-2 px-6 rounded-lg shadow-sm">Simpan Template CP</button></div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mt-6">
+                            <h4 class="font-semibold text-slate-700 mb-3">Daftar Template CP</h4>
+                            <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead class="bg-slate-50 border-b"><tr><th class="py-2 px-3 font-medium">Mapel</th><th class="py-2 px-3 font-medium">Fase</th><th class="py-2 px-3 font-medium">CP Umum</th><th class="py-2 px-3 font-medium">Jml Elemen</th><th class="py-2 px-3 font-medium text-center">Aksi</th></tr></thead><tbody id="table-admin-cp-body" class="divide-y divide-slate-100"></tbody></table></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Admin 2: Template Integrasi KBC -->
+                    <div id="admin-tab-panca" class="hidden">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-semibold mb-4">Tambah Template Integrasi KBC (Panca Cinta)</h3>
+                            <form id="form-panca" class="space-y-4">
+                                <div><label class="block text-sm font-medium mb-1">Nama Template</label><input type="text" id="input-nama-panca" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                <div><label class="block text-sm font-medium mb-1">Isi Panduan</label><textarea id="input-isi-panca" rows="4" class="w-full px-4 py-2 border rounded-lg outline-none resize-none" required></textarea></div>
+                                <div class="flex justify-end border-t pt-4"><button type="submit" class="bg-cinta-600 hover:bg-cinta-700 text-white font-medium py-2 px-6 rounded-lg shadow-sm">Simpan Template Integrasi</button></div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mt-6">
+                            <h4 class="font-semibold text-slate-700 mb-3">Daftar Template Integrasi KBC</h4>
+                            <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead class="bg-slate-50 border-b"><tr><th class="py-2 px-3 font-medium">Nama Template</th><th class="py-2 px-3 font-medium">Isi Panduan</th><th class="py-2 px-3 font-medium text-center">Aksi</th></tr></thead><tbody id="table-admin-panca-body" class="divide-y divide-slate-100"></tbody></table></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Admin 3: Template PPA -->
+                    <div id="admin-tab-ppa" class="hidden">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-semibold mb-4">Tambah Template PPA</h3>
+                            <form id="form-ppa" class="space-y-4">
+                                <div><label class="block text-sm font-medium mb-1">Nama Template</label><input type="text" id="input-nama-ppa" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                <div><label class="block text-sm font-medium mb-1">Isi Panduan PPA</label><textarea id="input-isi-ppa" rows="4" class="w-full px-4 py-2 border rounded-lg outline-none resize-none" required></textarea></div>
+                                <div class="flex justify-end border-t pt-4"><button type="submit" class="bg-cinta-600 hover:bg-cinta-700 text-white font-medium py-2 px-6 rounded-lg shadow-sm">Simpan Template PPA</button></div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mt-6">
+                            <h4 class="font-semibold text-slate-700 mb-3">Daftar Template PPA</h4>
+                            <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead class="bg-slate-50 border-b"><tr><th class="py-2 px-3 font-medium">Nama Template</th><th class="py-2 px-3 font-medium">Isi Panduan</th><th class="py-2 px-3 font-medium text-center">Aksi</th></tr></thead><tbody id="table-admin-ppa-body" class="divide-y divide-slate-100"></tbody></table></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Admin 4: Tambah Akun Guru -->
+                    <div id="admin-tab-guru" class="hidden">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cinta-500" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" /></svg>Tambah Akun Guru</h3>
+                            <form id="form-akun-guru" class="space-y-4 mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label class="block text-sm font-medium mb-1">Nama Guru</label><input type="text" id="input-nama-guru" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                    <div><label class="block text-sm font-medium mb-1">Username</label><input type="text" id="input-username-guru" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                    <div><label class="block text-sm font-medium mb-1">Password</label><input type="password" id="input-password-guru" class="w-full px-4 py-2 border rounded-lg outline-none" required></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-sm font-medium mb-1">Mata Pelajaran Default</label><input type="text" id="input-mapel-guru" class="w-full px-4 py-2 border rounded-lg outline-none"></div>
+                                    <div class="flex items-end"><button type="submit" class="bg-cinta-600 hover:bg-cinta-700 text-white font-medium py-2 px-6 rounded-lg transition-colors shadow-sm">Tambah Akun Guru</button></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mt-6">
+                            <h4 class="font-semibold text-slate-700 mb-3">Daftar Akun Guru</h4>
+                            <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead class="bg-slate-50 border-b"><tr><th class="py-3 px-4 font-medium">Nama</th><th class="py-3 px-4 font-medium">Username</th><th class="py-3 px-4 font-medium">Mapel</th><th class="py-3 px-4 font-medium text-center">Aksi</th></tr></thead><tbody id="table-akun-guru-body" class="divide-y divide-slate-100"></tbody></table></div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Admin 5: Pengaturan Logo -->
+                    <div id="admin-tab-logo" class="hidden">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h3 class="text-lg font-semibold mb-4">Pengaturan Logo</h3>
+                            <div class="flex flex-col md:flex-row items-center gap-6">
+                                <div class="w-24 h-24 border-2 border-dashed rounded-lg flex items-center justify-center bg-slate-50 overflow-hidden">
+                                    <img id="admin-logo-preview" src="" alt="Preview" class="w-full h-full object-contain hidden p-1">
+                                    <span id="admin-logo-placeholder" class="text-xs text-slate-400">Belum ada logo</span>
+                                </div>
+                                <div class="flex-1 space-y-3">
+                                    <input type="file" id="input-logo-upload" accept="image/*" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:bg-cinta-50 file:text-cinta-700 hover:file:bg-cinta-100 cursor-pointer">
+                                    <button id="btn-hapus-logo" class="text-xs text-red-500 hover:text-red-700 font-semibold hidden bg-red-50 px-2 py-1 rounded">Hapus Logo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GURU VIEW -->
+                <div id="guru-view" class="hidden space-y-6 fade-in">
+                    <!-- TAB 1: EKSTRAKSI CP -->
+                    <div id="tab-ekstraksi" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Ekstraksi CP</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                            <div><label class="block text-sm font-medium mb-1">Mata Pelajaran</label><input type="text" id="guru-mapel" class="w-full px-4 py-2 border rounded-lg outline-none"></div>
+                            <div><label class="block text-sm font-medium mb-1">Fase</label><select id="guru-fase" class="w-full px-4 py-2 border rounded-lg outline-none"><option value="" disabled selected>Pilih Fase</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option></select></div>
+                        </div>
+                        <div class="mb-5"><label class="block text-sm font-medium mb-2">Sumber CP</label><div class="flex gap-6"><label class="flex items-center gap-2"><input type="radio" name="sumber-cp" value="template" checked><span class="text-sm">Template Admin</span></label><label class="flex items-center gap-2"><input type="radio" name="sumber-cp" value="manual"><span class="text-sm">Manual</span></label></div></div>
+                        <div id="ui-template-cp" class="mb-5 bg-slate-50 p-4 rounded-lg border"><select id="select-template-cp" class="w-full px-4 py-2 border rounded-lg bg-white"></select></div>
+                        <div id="ui-manual-cp" class="mb-5 hidden"><div class="border rounded-lg overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50"><tr><th class="py-2 px-3 w-1/4">Elemen</th><th class="py-2 px-3 w-3/4">Deskripsi CP</th><th class="py-2 px-3 text-center">Aksi</th></tr></thead><tbody id="manual-cp-body"><tr class="border-b"><td class="p-2"><input type="text" class="input-elemen w-full border rounded px-2 py-1 text-sm"></td><td class="p-2"><textarea class="input-deskripsi w-full border rounded px-2 py-1 text-sm resize-none" rows="2"></textarea></td><td class="p-2 text-center"><button class="btn-hapus-baris text-red-500 font-bold">&times;</button></td></tr></tbody></table></div><button type="button" id="btn-tambah-baris" class="mt-3 text-sm text-cinta-600 font-semibold">+ Tambah Baris</button></div>
+                        <div class="flex justify-between items-center border-t pt-5"><div id="generate-error" class="hidden text-red-600 text-sm w-2/3"></div><button id="btn-generate-cp" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow flex items-center gap-2"><span>Generate CP</span><svg id="spinner-generate" class="animate-spin hidden h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></button></div>
+                        <div id="result-container" class="hidden mt-8 border-t pt-6"><div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil Ekstraksi CP</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-cp-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-cp-export', 'CP_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-cp-export', 'CP_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div><div class="overflow-x-auto border rounded-lg"><table id="table-cp-export" class="w-full text-left text-sm"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-12">No</th><th class="py-2.5 px-3 min-w-[120px]">Elemen</th><th class="py-2.5 px-3 min-w-[200px]">Capaian Pembelajaran</th><th class="py-2.5 px-3 min-w-[150px]">Materi Esensial</th><th class="py-2.5 px-3 min-w-[150px]">Kompetensi</th><th class="py-2.5 px-3 min-w-[200px]">Rumusan Tujuan</th></tr></thead><tbody id="table-hasil-body" class="divide-y bg-white"></tbody></table></div></div>
+                    </div>
+
+                    <!-- TAB 2: INTEGRASI PANCA CINTA -->
+                    <div id="tab-integrasi" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Integrasi Panca Cinta</h3>
+                        <div id="integrasi-empty-cp" class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-5 hidden">Data CP belum tersedia. Silakan generate CP di tab Ekstraksi terlebih dahulu.</div>
+                        <div id="integrasi-form-container">
+                            <div class="mb-5"><label class="block text-sm font-medium mb-2">Sumber Panduan</label><div class="flex gap-6"><label class="flex items-center gap-2"><input type="radio" name="sumber-panca" value="template" checked><span class="text-sm">Template Admin</span></label><label class="flex items-center gap-2"><input type="radio" name="sumber-panca" value="manual"><span class="text-sm">Manual</span></label></div></div>
+                            <div id="ui-template-panca" class="mb-5 bg-slate-50 p-4 rounded-lg border"><select id="select-template-panca" class="w-full px-4 py-2 border rounded-lg bg-white"></select></div>
+                            <div id="ui-manual-panca" class="mb-5 hidden"><textarea id="input-manual-panca" rows="4" class="w-full px-4 py-2 border rounded-lg outline-none resize-none" placeholder="Masukkan panduan integrasi Panca Cinta..."></textarea></div>
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-integrasi" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate Integrasi</button></div>
+                            <div id="result-integrasi-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil Integrasi Panca Cinta</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-integrasi-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-integrasi-export', 'Integrasi_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-integrasi-export', 'Integrasi_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="overflow-x-auto border rounded-lg"><table id="table-integrasi-export" class="w-full text-left text-sm"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-12">No</th><th class="py-2.5 px-3 min-w-[120px]">Elemen</th><th class="py-2.5 px-3 min-w-[200px]">CP</th><th class="py-2.5 px-3 min-w-[150px]">Materi Esensial</th><th class="py-2.5 px-3 min-w-[150px]">Dimensi Lulusan</th><th class="py-2.5 px-3 min-w-[150px]">Nilai Panca Cinta</th><th class="py-2.5 px-3 min-w-[200px]">Catatan</th></tr></thead><tbody id="table-integrasi-body" class="divide-y bg-white"></tbody></table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: TP & ATP -->
+                    <div id="tab-tpatp" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">TP & ATP</h3>
+                        <div id="tpatp-empty-cp" class="bg-blue-50 p-4 rounded-lg mb-5 hidden">Data Integrasi belum tersedia. Silakan generate Integrasi di tab sebelumnya.</div>
+                        <div id="tpatp-form-container">
+                            <div class="bg-slate-50 p-5 rounded-lg border mb-6"><h4 class="font-semibold text-sm mb-3">Informasi Konteks</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="form-konteks">
+                                    <div><label class="block text-xs font-medium mb-1">Sekolah</label><input type="text" id="input-sekolah" class="w-full border rounded px-3 py-2 text-sm req-tpatp"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Kota</label><input type="text" id="input-kota" class="w-full border rounded px-3 py-2 text-sm req-tpatp"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Provinsi</label><input type="text" id="input-provinsi" class="w-full border rounded px-3 py-2 text-sm req-tpatp"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Kelas</label><input type="text" id="input-kelas" class="w-full border rounded px-3 py-2 text-sm req-tpatp"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Semester</label><select id="input-semester" class="w-full border rounded px-3 py-2 text-sm req-tpatp"><option value="" disabled selected>Pilih</option><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select></div>
+                                    <div><label class="block text-xs font-medium mb-1">Tahun Ajaran</label><input type="text" id="input-tahun-ajaran" class="w-full border rounded px-3 py-2 text-sm req-tpatp"></div>
+                                </div>
+                            </div>
+                            <div class="mb-5"><label class="block text-sm font-medium mb-2">Sumber PPA</label><div class="flex gap-6"><label class="flex items-center gap-2"><input type="radio" name="sumber-ppa" value="template" class="req-radio-tpatp"><span class="text-sm">Template Admin</span></label><label class="flex items-center gap-2"><input type="radio" name="sumber-ppa" value="manual" class="req-radio-tpatp"><span class="text-sm">Manual</span></label></div></div>
+                            <div id="ui-template-ppa" class="mb-5 hidden bg-slate-50 p-4 rounded-lg border"><select id="select-template-ppa" class="w-full px-4 py-2 border rounded-lg bg-white"></select></div>
+                            <div id="ui-manual-ppa" class="mb-5 hidden"><textarea id="input-manual-ppa" rows="4" class="w-full px-4 py-2 border rounded-lg outline-none resize-none" placeholder="Masukkan panduan PPA..."></textarea></div>
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-tpatp" disabled class="ml-auto bg-cinta-600 hover:bg-cinta-700 disabled:bg-slate-300 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate TP & ATP</button></div>
+                            <div id="result-tpatp-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil TP & ATP</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-tpatp-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-tpatp-export', 'TP_ATP_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-tpatp-export', 'TP_ATP_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="overflow-x-auto border rounded-lg"><table id="table-tpatp-export" class="w-full text-left text-sm min-w-[1200px]"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-10">No</th><th class="py-2.5 px-3 min-w-[80px]">Seq</th><th class="py-2.5 px-3 min-w-[100px]">Kode TP</th><th class="py-2.5 px-3 min-w-[300px]">Tujuan Pembelajaran</th><th class="py-2.5 px-3 min-w-[150px]">Dimensi Lulusan</th><th class="py-2.5 px-3 min-w-[150px]">Nilai Panca Cinta</th><th class="py-2.5 px-3 min-w-[200px]">Materi Pokok</th><th class="py-2.5 px-3 min-w-[200px]">Praktik Pedagogis</th><th class="py-2.5 px-3 min-w-[80px]">Alokasi JP</th></tr></thead><tbody id="table-tpatp-body"></tbody></table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: PROTA -->
+                    <div id="tab-prota" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">PROTA (Program Tahunan)</h3>
+                        <div id="prota-empty" class="bg-blue-50 p-4 rounded-lg mb-5 hidden">Data TP & ATP belum tersedia. Silakan generate TP & ATP terlebih dahulu.</div>
+                        <div id="prota-form-container">
+                            <div class="bg-slate-50 p-5 rounded-lg border mb-6">
+                                <h4 class="font-semibold text-sm mb-3">Perhitungan Minggu Efektif</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label class="block text-xs font-medium mb-1">Total Minggu Semester</label><input type="number" id="input-total-minggu" class="w-full border rounded px-3 py-2 text-sm" placeholder="Misal: 18"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Minggu Tidak Efektif</label><input type="number" id="input-minggu-tidak-efektif" class="w-full border rounded px-3 py-2 text-sm" placeholder="Misal: 4"></div>
+                                    <div class="flex items-end"><button id="btn-hitung-minggu" class="bg-slate-600 hover:bg-slate-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Hitung Minggu Efektif</button></div>
+                                </div>
+                                <div id="hasil-minggu-efektif" class="mt-3 hidden text-sm font-semibold text-cinta-700">Minggu Efektif: <span id="jumlah-minggu-efektif">0</span></div>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-prota" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate PROTA</button></div>
+                            <div id="result-prota-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil PROTA</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-prota-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-prota-export', 'PROTA_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-prota-export', 'PROTA_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="overflow-x-auto border rounded-lg"><table id="table-prota-export" class="w-full text-left text-sm"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-10">No</th><th class="py-2.5 px-3 min-w-[100px]">Kode TP</th><th class="py-2.5 px-3 min-w-[300px]">Tujuan Pembelajaran</th><th class="py-2.5 px-3 min-w-[200px]">Materi Pokok</th><th class="py-2.5 px-3 min-w-[80px]">JP</th><th class="py-2.5 px-3 min-w-[80px]">Minggu</th><th class="py-2.5 px-3 min-w-[100px]">Bulan</th><th class="py-2.5 px-3 min-w-[150px]">Keterangan</th></tr></thead><tbody id="table-prota-body" class="divide-y bg-white"></tbody></table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: PROSEM -->
+                    <div id="tab-prosem" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">PROSEM (Program Semester)</h3>
+                        <div id="prosem-empty" class="bg-blue-50 p-4 rounded-lg mb-5 hidden">Data PROTA belum tersedia. Silakan generate PROTA terlebih dahulu.</div>
+                        <div id="prosem-form-container">
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-prosem" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate PROSEM</button></div>
+                            <div id="result-prosem-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil PROSEM</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-prosem-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-prosem-export', 'PROSEM_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-prosem-export', 'PROSEM_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="overflow-x-auto border rounded-lg"><table id="table-prosem-export" class="w-full text-left text-sm min-w-[1400px]"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-10">No</th><th class="py-2.5 px-3 min-w-[100px]">Kode TP</th><th class="py-2.5 px-3 min-w-[300px]">Tujuan Pembelajaran</th><th class="py-2.5 px-3 min-w-[200px]">Materi Pokok</th><th class="py-2.5 px-3 min-w-[80px]">JP</th><th class="py-2.5 px-3 min-w-[100px]">Januari</th><th class="py-2.5 px-3 min-w-[100px]">Februari</th><th class="py-2.5 px-3 min-w-[100px]">Maret</th><th class="py-2.5 px-3 min-w-[100px]">April</th><th class="py-2.5 px-3 min-w-[100px]">Mei</th><th class="py-2.5 px-3 min-w-[100px]">Juni</th><th class="py-2.5 px-3 min-w-[100px]">Juli</th><th class="py-2.5 px-3 min-w-[100px]">Agustus</th><th class="py-2.5 px-3 min-w-[100px]">September</th><th class="py-2.5 px-3 min-w-[100px]">Oktober</th><th class="py-2.5 px-3 min-w-[100px]">November</th><th class="py-2.5 px-3 min-w-[100px]">Desember</th></tr></thead><tbody id="table-prosem-body" class="divide-y bg-white"></tbody></table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 6: KKTP -->
+                    <div id="tab-kktp" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">KKTP (Kriteria Ketercapaian Tujuan Pembelajaran)</h3>
+                        <div id="kktp-empty" class="bg-blue-50 p-4 rounded-lg mb-5 hidden">Data TP & ATP belum tersedia. Silakan generate TP & ATP terlebih dahulu.</div>
+                        <div id="kktp-form-container">
+                            <div class="bg-slate-50 p-5 rounded-lg border mb-6">
+                                <h4 class="font-semibold text-sm mb-3">Konfigurasi KKTP</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-medium mb-1">Rentang Nilai Minimum</label><input type="number" id="input-kktp-min" class="w-full border rounded px-3 py-2 text-sm" value="65" placeholder="Min: 0"></div>
+                                    <div><label class="block text-xs font-medium mb-1">Rentang Nilai Maksimum</label><input type="number" id="input-kktp-max" class="w-full border rounded px-3 py-2 text-sm" value="100" placeholder="Max: 100"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-kktp" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate KKTP</button></div>
+                            <div id="result-kktp-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil KKTP</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-kktp-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-kktp-export', 'KKTP_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-kktp-export', 'KKTP_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="overflow-x-auto border rounded-lg"><table id="table-kktp-export" class="w-full text-left text-sm"><thead class="bg-slate-50"><tr><th class="py-2.5 px-3 w-10">No</th><th class="py-2.5 px-3 min-w-[100px]">Kode TP</th><th class="py-2.5 px-3 min-w-[300px]">Tujuan Pembelajaran</th><th class="py-2.5 px-3 min-w-[150px]">Kriteria Penilaian</th><th class="py-2.5 px-3 min-w-[80px]">Nilai Minimal</th><th class="py-2.5 px-3 min-w-[200px]">Deskripsi Pencapaian</th></tr></thead><tbody id="table-kktp-body" class="divide-y bg-white"></tbody></table></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 7: MODUL AJAR / RPP -->
+                    <div id="tab-rpp" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Modul Ajar / RPP</h3>
+                        <div id="rpp-empty" class="bg-blue-50 p-4 rounded-lg mb-5 hidden">Data TP & ATP belum tersedia. Silakan generate TP & ATP terlebih dahulu.</div>
+                        <div id="rpp-form-container">
+                            <div class="bg-slate-50 p-5 rounded-lg border mb-6"><h4 class="font-semibold text-sm mb-3">Pilih TP untuk RPP</h4>
+                                <select id="select-tp-rpp" class="w-full px-4 py-2 border rounded-lg bg-white"><option value="">-- Pilih Tujuan Pembelajaran --</option></select>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-5"><button id="btn-generate-rpp" class="ml-auto bg-cinta-600 hover:bg-cinta-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow">Generate RPP</button></div>
+                            <div id="result-rpp-container" class="hidden mt-8 border-t pt-6">
+                                <div class="flex justify-between items-center mb-4 flex-wrap gap-2"><h4 class="font-bold text-lg">Hasil Modul Ajar / RPP</h4><div class="flex gap-2 no-print flex-wrap"><button onclick="salinTabelRapi('table-rpp-export', this)" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-sm">Salin</button><button onclick="downloadWord('table-rpp-export', 'RPP_'+document.getElementById('guru-mapel').value)" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md text-sm">Word</button><button onclick="downloadExcel('table-rpp-export', 'RPP_'+document.getElementById('guru-mapel').value)" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-md text-sm">Excel</button></div></div>
+                                <div class="space-y-4" id="rpp-content"><div class="bg-white border rounded-lg p-4" id="rpp-identitas"></div><div class="bg-white border rounded-lg p-4" id="rpp-komponen-inti"></div><div class="bg-white border rounded-lg p-4" id="rpp-kegiatan"></div><div class="bg-white border rounded-lg p-4" id="rpp-asesmen"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB RIWAYAT -->
+                    <div id="tab-riwayat" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hidden">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cinta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Riwayat & Pengaturan API</h3>
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                            <h4 class="font-semibold text-blue-900 text-sm mb-2">🔑 API Key Gemini Anda</h4>
+                            <p class="text-xs text-blue-700 mb-2">Masukkan API Key Gemini Anda sendiri. Kunci ini akan disimpan hanya untuk akun Anda.</p>
+                            <div class="flex gap-3 items-center">
+                                <input type="password" id="riwayat-api-key-input" placeholder="Masukkan API Key Gemini" class="flex-1 px-4 py-2 border border-blue-300 rounded-lg text-sm outline-none bg-white">
+                                <button id="btn-simpan-api-key" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors shadow-sm">Simpan</button>
+                            </div>
+                            <p id="api-key-status" class="text-xs text-blue-600 mt-2 hidden">✓ API Key tersimpan untuk akun ini.</p>
+                            <p class="text-xs text-blue-700 mt-2">Butuh API Key baru? <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline font-semibold">Buka Google AI Studio</a></p>
+                        </div>
+                        <div class="border border-slate-200 rounded-lg overflow-hidden">
+                            <div class="bg-slate-50 border-b p-3 flex justify-between items-center">
+                                <h4 class="font-bold text-sm text-slate-700">Riwayat Generate</h4>
+                                <button id="btn-hapus-riwayat" class="text-xs text-red-600 hover:text-red-800 font-semibold px-2 py-1 rounded">Hapus Riwayat</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-slate-100 border-b"><tr><th class="py-2.5 px-3 font-semibold w-12 text-center">No</th><th class="py-2.5 px-3 font-semibold w-1/4">Jenis Dokumen</th><th class="py-2.5 px-3 font-semibold w-2/4">Mata Pelajaran / Topik</th><th class="py-2.5 px-3 font-semibold w-1/4">Tanggal & Waktu</th></tr></thead>
+                                    <tbody id="table-riwayat-body" class="divide-y bg-white"></tbody>
+                                </table>
+                                <div id="riwayat-empty" class="hidden py-8 text-center text-slate-500 text-sm">Belum ada riwayat aktivitas.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // ============ DATA STORAGE ============
+        const defaultUsers = [
+            { role: 'admin', username: 'admin', password: 'admin123', nama: 'Administrator' },
+            { role: 'guru', username: 'guru1', password: 'guru123', nama: 'Haery Oktina', mapel: 'Informatika' }
+        ];
+        if (!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify(defaultUsers));
+
+        let templateCP = JSON.parse(localStorage.getItem('templateCP')) || [];
+        let templatePancaCinta = JSON.parse(localStorage.getItem('templatePancaCinta')) || [];
+        let templatePPA = JSON.parse(localStorage.getItem('templatePPA')) || [];
+        let hasilCP = JSON.parse(localStorage.getItem('hasilCP')) || [];
+        let hasilCPTerintegrasi = JSON.parse(localStorage.getItem('hasilCPTerintegrasi')) || [];
+        let hasilATP = JSON.parse(localStorage.getItem('hasilATP')) || [];
+        let hasilPROTA = JSON.parse(localStorage.getItem('hasilPROTA')) || [];
+        let hasilPROSEM = JSON.parse(localStorage.getItem('hasilPROSEM')) || [];
+        let hasilKKTP = JSON.parse(localStorage.getItem('hasilKKTP')) || null;
+        let hasilRPP = JSON.parse(localStorage.getItem('hasilRPP')) || null;
+        let curTotalMingguEfektif = 0;
+
+        function getApiKeyForCurrentUser() {
+            const cu = JSON.parse(localStorage.getItem('currentUser'));
+            if (!cu) return '';
+            return localStorage.getItem('apiKey_' + cu.username) || '';
+        }
+        function setApiKeyForCurrentUser(key) {
+            const cu = JSON.parse(localStorage.getItem('currentUser'));
+            if (!cu) return;
+            localStorage.setItem('apiKey_' + cu.username, key);
+        }
+
+        // ============ THEME ============
+        const btnThemeToggle = document.getElementById('btn-theme-toggle');
+        function initTheme() {
+            if (localStorage.themeMode === 'dark' || (!('themeMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark'); btnThemeToggle.textContent = '☀️';
+            } else { document.documentElement.classList.remove('dark'); btnThemeToggle.textContent = '🌙'; }
+        }
+        btnThemeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.themeMode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            btnThemeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+        });
+        initTheme();
+
+        // ============ LOGO ============
+        const inputLogoUpload = document.getElementById('input-logo-upload');
+        const btnHapusLogo = document.getElementById('btn-hapus-logo');
+        function initLogo() {
+            const l = localStorage.getItem('appLogo');
+            ['login-logo', 'sidebar-logo'].forEach(id => {
+                const img = document.getElementById(id+'-img'), svg = document.getElementById(id+'-svg');
+                if(l) { if(img) {img.src=l; img.classList.remove('hidden');} if(svg) svg.classList.add('hidden'); }
+                else { if(img) img.classList.add('hidden'); if(svg) svg.classList.remove('hidden'); }
+            });
+            const pImg = document.getElementById('admin-logo-preview'), pSvg = document.getElementById('admin-logo-placeholder');
+            if(pImg && pSvg) { if(l) {pImg.src=l; pImg.classList.remove('hidden'); pSvg.classList.add('hidden'); btnHapusLogo?.classList.remove('hidden');} else {pImg.classList.add('hidden'); pSvg.classList.remove('hidden'); btnHapusLogo?.classList.add('hidden');} }
+        }
+        if(inputLogoUpload) inputLogoUpload.addEventListener('change', e => { const f=e.target.files[0]; if(f){ const r=new FileReader(); r.onload=ev=>{localStorage.setItem('appLogo', ev.target.result); initLogo();}; r.readAsDataURL(f); } });
+        if(btnHapusLogo) btnHapusLogo.addEventListener('click', () => { localStorage.removeItem('appLogo'); if(inputLogoUpload) inputLogoUpload.value=''; initLogo(); });
+        initLogo();
+
+        // ============ INDICATORS ============
+        function updateIndicators() {
+            const set = (id, valid) => { const el = document.getElementById(id); if(el) el.textContent = valid ? '✓' : ''; };
+            set('ind-cp', hasilCP && hasilCP.length); set('ind-integrasi', hasilCPTerintegrasi && hasilCPTerintegrasi.length);
+            set('ind-tpatp', hasilATP && hasilATP.length); set('ind-prota', hasilPROTA && hasilPROTA.length);
+            set('ind-prosem', hasilPROSEM && hasilPROSEM.length); set('ind-kktp', hasilKKTP && hasilKKTP.kktp); set('ind-rpp', hasilRPP);
+        }
+
+        // ============ RIWAYAT ============
+        function tambahRiwayat(jenis, topik) {
+            let riwayat = JSON.parse(localStorage.getItem('riwayatAktivitas')) || [];
+            const now = new Date();
+            const tgl = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            riwayat.unshift({ id: Date.now(), jenis: jenis, topik: topik || '-', tgl: tgl, waktu: waktu });
+            if (riwayat.length > 100) riwayat.pop();
+            localStorage.setItem('riwayatAktivitas', JSON.stringify(riwayat));
+            renderRiwayat();
+        }
+        function renderRiwayat() {
+            const riwayat = JSON.parse(localStorage.getItem('riwayatAktivitas')) || [];
+            const tbody = document.getElementById('table-riwayat-body');
+            const empty = document.getElementById('riwayat-empty');
+            if (!tbody) return;
+            if (riwayat.length === 0) { tbody.innerHTML = ''; empty.classList.remove('hidden'); }
+            else { empty.classList.add('hidden'); tbody.innerHTML = riwayat.map((r, i) => `<tr class="hover:bg-slate-50"><td class="py-2.5 px-3 border-b text-center">${i+1}</td><td class="py-2.5 px-3 border-b font-semibold">${r.jenis}</td><td class="py-2.5 px-3 border-b">${r.topik}</td><td class="py-2.5 px-3 border-b text-xs text-slate-500">${r.tgl} ${r.waktu}</td></tr>`).join(''); }
+        }
+        document.getElementById('btn-hapus-riwayat').addEventListener('click', () => { if(confirm('Hapus seluruh riwayat?')) { localStorage.removeItem('riwayatAktivitas'); renderRiwayat(); } });
+
+        // ============ ADMIN TABLES ============
+        function renderAllAdminTables() {
+            const cpBody = document.getElementById('table-admin-cp-body');
+            if (cpBody) cpBody.innerHTML = templateCP.length ? templateCP.map(t => `<tr class="border-b"><td class="py-2 px-3">${t.mapel}</td><td class="py-2 px-3">Fase ${t.fase}</td><td class="py-2 px-3 text-sm max-w-xs truncate">${t.cpUmum || '-'}</td><td class="py-2 px-3 text-center">${t.elemen ? t.elemen.length : 0}</td><td class="py-2 px-3 text-center"><button onclick="deleteTemplateCP(${t.id})" class="text-red-500 font-bold">&times;</button></td></tr>`).join('') : '<tr><td colspan="5" class="py-4 text-center text-slate-400">Belum ada template CP</td></tr>';
+            const pancaBody = document.getElementById('table-admin-panca-body');
+            if (pancaBody) pancaBody.innerHTML = templatePancaCinta.length ? templatePancaCinta.map(t => `<tr class="border-b"><td class="py-2 px-3">${t.namaTemplate}</td><td class="py-2 px-3 text-sm max-w-xs truncate">${t.isiPanduan}</td><td class="py-2 px-3 text-center"><button onclick="deleteTemplatePanca(${t.id})" class="text-red-500 font-bold">&times;</button></td></tr>`).join('') : '<tr><td colspan="3" class="py-4 text-center text-slate-400">Belum ada template integrasi</td></tr>';
+            const ppaBody = document.getElementById('table-admin-ppa-body');
+            if (ppaBody) ppaBody.innerHTML = templatePPA.length ? templatePPA.map(t => `<tr class="border-b"><td class="py-2 px-3">${t.namaTemplate}</td><td class="py-2 px-3 text-sm max-w-xs truncate">${t.isiPanduan}</td><td class="py-2 px-3 text-center"><button onclick="deleteTemplatePPA(${t.id})" class="text-red-500 font-bold">&times;</button></td></tr>`).join('') : '<tr><td colspan="3" class="py-4 text-center text-slate-400">Belum ada template PPA</td></tr>';
+            document.getElementById('admin-cp-count').textContent = templateCP.length;
+            document.getElementById('admin-panca-count').textContent = templatePancaCinta.length;
+            document.getElementById('admin-ppa-count').textContent = templatePPA.length;
+            const guruCount = (JSON.parse(localStorage.getItem('users')) || []).filter(u => u.role === 'guru').length;
+            document.getElementById('admin-guru-count').textContent = guruCount;
+        }
+
+        // ============ ADMIN TABS ============
+        function switchAdminTab(tabId) {
+            ['admin-cp', 'admin-panca', 'admin-ppa', 'admin-guru', 'admin-logo'].forEach(m => {
+                const short = m.replace('admin-', '');
+                const btn = document.getElementById('sb-admin-btn-' + short);
+                const tab = document.getElementById('admin-tab-' + short);
+                if (btn) { btn.classList.remove('bg-cinta-50', 'text-cinta-700', 'border-l-4', 'border-cinta-500'); btn.classList.add('text-slate-700'); }
+                if (tab) tab.classList.add('hidden');
+            });
+            const short = tabId.replace('admin-', '');
+            const activeBtn = document.getElementById('sb-admin-btn-' + short);
+            if (activeBtn) { activeBtn.classList.remove('text-slate-700'); activeBtn.classList.add('bg-cinta-50', 'text-cinta-700', 'border-l-4', 'border-cinta-500'); }
+            const activeTab = document.getElementById('admin-tab-' + short);
+            if (activeTab) activeTab.classList.remove('hidden');
+            const titles = { 'cp': 'Tambah Template CP', 'panca': 'Tambah Template Integrasi KBC', 'ppa': 'Tambah Template PPA', 'guru': 'Tambah Akun Guru', 'logo': 'Pengaturan Logo' };
+            document.getElementById('top-nav-title').textContent = titles[short] || 'Dashboard Admin';
+            if (window.innerWidth < 768) document.getElementById('app-sidebar').classList.add('-translate-x-full');
+        }
+
+        // ============ ADMIN: DELETE FUNCTIONS ============
+        window.deleteTemplateCP = function(id) {
+            if (confirm('Hapus template CP ini?')) { templateCP = templateCP.filter(t => t.id !== id); localStorage.setItem('templateCP', JSON.stringify(templateCP)); renderAllAdminTables(); }
+        };
+        window.deleteTemplatePanca = function(id) {
+            if (confirm('Hapus template integrasi ini?')) { templatePancaCinta = templatePancaCinta.filter(t => t.id !== id); localStorage.setItem('templatePancaCinta', JSON.stringify(templatePancaCinta)); renderAllAdminTables(); }
+        };
+        window.deleteTemplatePPA = function(id) {
+            if (confirm('Hapus template PPA ini?')) { templatePPA = templatePPA.filter(t => t.id !== id); localStorage.setItem('templatePPA', JSON.stringify(templatePPA)); renderAllAdminTables(); }
+        };
+
+        // ============ ADMIN: KELOLA AKUN GURU ============
+        function renderTableAkunGuru() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const guruList = users.filter(u => u.role === 'guru');
+            const tbody = document.getElementById('table-akun-guru-body');
+            if (tbody) {
+                tbody.innerHTML = guruList.length ? guruList.map(g => `<tr class="border-b"><td class="py-3 px-4">${g.nama}</td><td class="py-3 px-4">${g.username}</td><td class="py-3 px-4">${g.mapel || '-'}</td><td class="py-3 px-4 text-center"><button onclick="deleteAkunGuru('${g.username}')" class="text-red-500 font-bold">&times;</button></td></tr>`).join('') : '<tr><td colspan="4" class="py-4 text-center text-slate-400">Belum ada akun guru</td></tr>';
+            }
+            document.getElementById('admin-guru-count').textContent = guruList.length;
+        }
+        window.deleteAkunGuru = function(username) {
+            if (confirm('Hapus akun guru ' + username + '?')) {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                users = users.filter(u => !(u.role === 'guru' && u.username === username));
+                localStorage.setItem('users', JSON.stringify(users));
+                renderTableAkunGuru();
+            }
+        };
+        document.getElementById('form-akun-guru').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nama = document.getElementById('input-nama-guru').value.trim();
+            const username = document.getElementById('input-username-guru').value.trim();
+            const password = document.getElementById('input-password-guru').value.trim();
+            const mapel = document.getElementById('input-mapel-guru').value.trim();
+            if (!nama || !username || !password) return alert('Nama, username, password wajib diisi.');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.find(u => u.username === username)) return alert('Username sudah digunakan.');
+            users.push({ role: 'guru', username, password, nama, mapel });
+            localStorage.setItem('users', JSON.stringify(users));
+            this.reset();
+            renderTableAkunGuru();
+            alert('Akun guru berhasil ditambahkan!');
+        });
+
+        // ============ ADMIN: TEMPLATE CP ============
+        document.getElementById('btn-tambah-elemen-cp').addEventListener('click', () => {
+            document.getElementById('admin-cp-elemen-body').innerHTML += `<tr class="border-b"><td class="p-2"><input type="text" class="input-elemen-cp w-full border rounded px-2 py-1.5 text-sm" placeholder="Nama Elemen"></td><td class="p-2"><textarea class="input-deskripsi-cp w-full border rounded px-2 py-1.5 text-sm resize-none" rows="2" placeholder="Deskripsi CP..."></textarea></td><td class="p-2 text-center"><button type="button" class="btn-hapus-baris-cp text-red-500 font-bold text-lg">&times;</button></td></tr>`;
+        });
+        document.getElementById('admin-cp-elemen-body').addEventListener('click', e => {
+            if (e.target.classList.contains('btn-hapus-baris-cp')) {
+                const rows = document.getElementById('admin-cp-elemen-body').querySelectorAll('tr');
+                if (rows.length > 1) e.target.closest('tr').remove();
+            }
+        });
+        document.getElementById('form-cp').addEventListener('submit', e => {
+            e.preventDefault();
+            const mapel = document.getElementById('input-mapel').value.trim();
+            const fase = document.getElementById('input-fase').value;
+            const cpUmum = document.getElementById('input-cp-umum').value.trim();
+            const elemen = [];
+            document.getElementById('admin-cp-elemen-body').querySelectorAll('tr').forEach(row => {
+                const el = row.querySelector('.input-elemen-cp').value.trim();
+                const desc = row.querySelector('.input-deskripsi-cp').value.trim();
+                if (el || desc) elemen.push({ elemen: el, deskripsiCP: desc });
+            });
+            if (!mapel || !fase) return alert('Mata Pelajaran dan Fase wajib diisi.');
+            templateCP.push({ id: Date.now(), mapel, fase, cpUmum, elemen });
+            localStorage.setItem('templateCP', JSON.stringify(templateCP));
+            e.target.reset();
+            document.getElementById('admin-cp-elemen-body').innerHTML = `<tr class="border-b"><td class="p-2"><input type="text" class="input-elemen-cp w-full border rounded px-2 py-1.5 text-sm" placeholder="Nama Elemen"></td><td class="p-2"><textarea class="input-deskripsi-cp w-full border rounded px-2 py-1.5 text-sm resize-none" rows="2" placeholder="Deskripsi CP..."></textarea></td><td class="p-2 text-center"><button type="button" class="btn-hapus-baris-cp text-red-500 font-bold text-lg">&times;</button></td></tr>`;
+            renderAllAdminTables();
+        });
+        document.getElementById('form-panca').addEventListener('submit', e => { e.preventDefault(); templatePancaCinta.push({id: Date.now(), namaTemplate: document.getElementById('input-nama-panca').value.trim(), isiPanduan: document.getElementById('input-isi-panca').value.trim()}); localStorage.setItem('templatePancaCinta', JSON.stringify(templatePancaCinta)); e.target.reset(); renderAllAdminTables(); });
+        document.getElementById('form-ppa').addEventListener('submit', e => { e.preventDefault(); templatePPA.push({id: Date.now(), namaTemplate: document.getElementById('input-nama-ppa').value.trim(), isiPanduan: document.getElementById('input-isi-ppa').value.trim()}); localStorage.setItem('templatePPA', JSON.stringify(templatePPA)); e.target.reset(); renderAllAdminTables(); });
+
+        // ============ SESSION & LOGIN ============
+        const loginView = document.getElementById('login-view'), mainApp = document.getElementById('main-app');
+        const adminView = document.getElementById('admin-view'), guruView = document.getElementById('guru-view');
+
+        function checkSession() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                loginView.classList.add('hidden'); mainApp.classList.remove('hidden');
+                document.getElementById('user-display-name').textContent = currentUser.nama;
+                document.getElementById('user-display-role').textContent = currentUser.role;
+                document.getElementById('user-avatar-initial').textContent = currentUser.nama.charAt(0).toUpperCase();
+
+                if (currentUser.role === 'admin') {
+                    adminView.classList.remove('hidden'); guruView.classList.add('hidden');
+                    document.getElementById('sidebar-menu-admin').classList.remove('hidden');
+                    document.getElementById('sidebar-menu-guru').classList.add('hidden');
+                    renderTableAkunGuru(); renderAllAdminTables();
+                    switchAdminTab('admin-cp');
+                } else if (currentUser.role === 'guru') {
+                    adminView.classList.add('hidden'); guruView.classList.remove('hidden');
+                    document.getElementById('sidebar-menu-guru').classList.remove('hidden');
+                    document.getElementById('sidebar-menu-admin').classList.add('hidden');
+                    document.getElementById('guru-mapel').value = currentUser.mapel || '';
+                    filterTemplateDropdown(); populateTemplatePancaDropdown(); populateTemplatePPADropdown();
+                    renderHasilCPTable(); renderHasilIntegrasiTable(); renderHasilATPTable();
+                    renderHasilPROTATable(); renderHasilPROSEMTable(); renderHasilKKTPTable(); renderHasilRPPView();
+                    populateTPDropdownRPP();
+                    renderPreviewCP(); renderPreviewCPTerintegrasi(); renderProtaEmpty(); renderProsemEmpty(); renderKktpEmpty(); renderRppEmpty();
+                    renderRiwayat();
+                    const savedKey = getApiKeyForCurrentUser();
+                    document.getElementById('riwayat-api-key-input').value = savedKey;
+                    document.getElementById('api-key-status').classList.toggle('hidden', !savedKey);
+                    updateIndicators(); switchTab('ekstraksi');
+                }
+            } else { loginView.classList.remove('hidden'); mainApp.classList.add('hidden'); }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value, p = document.getElementById('password').value;
+            const user = JSON.parse(localStorage.getItem('users')).find(x => x.username === u && x.password === p);
+            if (user) { localStorage.setItem('currentUser', JSON.stringify(user)); document.getElementById('login-error').classList.add('hidden'); this.reset(); checkSession(); }
+            else document.getElementById('login-error').classList.remove('hidden');
+        });
+        document.getElementById('btn-logout').addEventListener('click', () => { localStorage.removeItem('currentUser'); checkSession(); });
+
+        // ============ API KEY SAVE ============
+        document.getElementById('btn-simpan-api-key').addEventListener('click', () => {
+            const key = document.getElementById('riwayat-api-key-input').value.trim();
+            setApiKeyForCurrentUser(key);
+            document.getElementById('api-key-status').classList.toggle('hidden', !key);
+            alert('API Key berhasil disimpan!');
+        });
+
+        // ============ GURU TABS ============
+        function switchTab(tabId) {
+            ['ekstraksi', 'integrasi', 'tpatp', 'prota', 'prosem', 'kktp', 'rpp', 'riwayat'].forEach(m => {
+                const btn = document.getElementById('sb-btn-' + m), tab = document.getElementById('tab-' + m);
+                if(btn) { btn.classList.remove('bg-cinta-50', 'text-cinta-700', 'border-l-4', 'border-cinta-500'); btn.classList.add('text-slate-700'); }
+                if(tab) tab.classList.add('hidden');
+            });
+            const activeBtn = document.getElementById('sb-btn-' + tabId);
+            if(activeBtn) { activeBtn.classList.remove('text-slate-700'); activeBtn.classList.add('bg-cinta-50', 'text-cinta-700', 'border-l-4', 'border-cinta-500'); }
+            const activeTab = document.getElementById('tab-' + tabId);
+            if(activeTab) activeTab.classList.remove('hidden');
+            document.getElementById('top-nav-title').textContent = activeBtn ? activeBtn.innerText.replace('✓','').trim() : 'Sistem RPP';
+            if(window.innerWidth < 768) document.getElementById('app-sidebar').classList.add('-translate-x-full');
+            updateIndicators();
+            if(tabId === 'prota') renderProtaEmpty();
+            if(tabId === 'prosem') renderProsemEmpty();
+            if(tabId === 'kktp') renderKktpEmpty();
+            if(tabId === 'rpp') { renderRppEmpty(); populateTPDropdownRPP(); }
+        }
+
+        // ============ M1: EKSTRAKSI CP ============
+        function filterTemplateDropdown() {
+            const mVal = document.getElementById('guru-mapel').value.toLowerCase().trim(), fVal = document.getElementById('guru-fase').value;
+            const sel = document.getElementById('select-template-cp'); sel.innerHTML = '<option value="">-- Pilih Template CP --</option>'; let cnt = 0;
+            templateCP.forEach(i => { if((!mVal || i.mapel.toLowerCase().includes(mVal)) && (!fVal || i.fase === fVal)) { sel.innerHTML += `<option value="${i.id}">${i.mapel} - Fase ${i.fase}</option>`; cnt++; } });
+            if(!cnt) sel.innerHTML = '<option value="">-- Kosong --</option>';
+        }
+        document.getElementById('guru-mapel').addEventListener('input', filterTemplateDropdown);
+        document.getElementById('guru-fase').addEventListener('change', filterTemplateDropdown);
+        document.getElementsByName('sumber-cp').forEach(r => r.addEventListener('change', function() { document.getElementById('ui-template-cp').classList.toggle('hidden', this.value !== 'template'); document.getElementById('ui-manual-cp').classList.toggle('hidden', this.value === 'template'); }));
+        document.getElementById('btn-tambah-baris').addEventListener('click', () => { document.getElementById('manual-cp-body').innerHTML += `<tr class="border-b"><td class="p-2"><input type="text" class="input-elemen w-full border rounded px-2 py-1 text-sm"></td><td class="p-2"><textarea class="input-deskripsi w-full border rounded px-2 py-1 text-sm resize-none"></textarea></td><td class="p-2 text-center"><button class="btn-hapus-baris text-red-500 font-bold">&times;</button></td></tr>`; });
+        document.getElementById('manual-cp-body').addEventListener('click', e => { if(e.target.classList.contains('btn-hapus-baris') && document.getElementById('manual-cp-body').querySelectorAll('tr').length > 1) e.target.closest('tr').remove(); });
+        function renderHasilCPTable() { const res = document.getElementById('result-container'); const tb = document.getElementById('table-hasil-body'); if(hasilCP && hasilCP.length) { res.classList.remove('hidden'); tb.innerHTML = hasilCP.map(r => `<tr><td class="p-2.5 px-3 border-b">${r.no||'-'}</td><td class="p-2.5 px-3 border-b">${r.elemen||'-'}</td><td class="p-2.5 px-3 border-b">${r.capaianPembelajaran||'-'}</td><td class="p-2.5 px-3 border-b">${r.materiEsensial||'-'}</td><td class="p-2.5 px-3 border-b">${r.kompetensi||'-'}</td><td class="p-2.5 px-3 border-b">${r.rumusanTujuan||'-'}</td></tr>`).join(''); } else res.classList.add('hidden'); }
+        async function generateCP() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur. Silakan isi di menu Riwayat & API Key.');
+            let dataStr=''; const src = document.querySelector('input[name="sumber-cp"]:checked').value;
+            if(src==='template') { const s = templateCP.find(t=>t.id==document.getElementById('select-template-cp').value); if(s) dataStr = `CP Umum: ${s.cpUmum||''}\n` + (s.elemen||[]).map(e=>`${e.elemen}: ${e.deskripsiCP}`).join('\n'); }
+            else { let m=[]; document.getElementById('manual-cp-body').querySelectorAll('tr').forEach(r=>{let e=r.querySelector('.input-elemen').value,d=r.querySelector('.input-deskripsi').value; if(e||d)m.push(e+':'+d);}); dataStr=m.join('\n'); }
+            if(!dataStr) return alert('Data CP kosong');
+            document.getElementById('btn-generate-cp').disabled = true; document.getElementById('spinner-generate').classList.remove('hidden');
+            try {
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({contents:[{parts:[{text: `Susun CP format JSON array murni: ${dataStr}. Kolom: no, elemen, capaianPembelajaran, materiEsensial, kompetensi, rumusanTujuan.`}]}]}) });
+                if(!res.ok) throw new Error('API Error');
+                let txt = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilCP = JSON.parse(txt); localStorage.setItem('hasilCP', JSON.stringify(hasilCP));
+                tambahRiwayat('Ekstraksi CP', document.getElementById('guru-mapel').value || 'Tanpa Mapel');
+                renderHasilCPTable(); renderPreviewCP(); document.getElementById('result-container').scrollIntoView(); updateIndicators();
+            } catch(e) { alert('Error: '+e.message); }
+            finally { document.getElementById('btn-generate-cp').disabled = false; document.getElementById('spinner-generate').classList.add('hidden'); }
+        }
+        document.getElementById('btn-generate-cp').addEventListener('click', generateCP);
+
+        // ============ M2: INTEGRASI ============
+        function populateTemplatePancaDropdown() { const sel = document.getElementById('select-template-panca'); sel.innerHTML = templatePancaCinta.length ? templatePancaCinta.map(i => `<option value="${i.id}">${i.namaTemplate}</option>`).join('') : '<option value="">-- Kosong --</option>'; }
+        document.getElementsByName('sumber-panca').forEach(r => r.addEventListener('change', function() { document.getElementById('ui-template-panca').classList.toggle('hidden', this.value!=='template'); document.getElementById('ui-manual-panca').classList.toggle('hidden', this.value==='template'); }));
+        function renderPreviewCP() { if(hasilCP && hasilCP.length) { document.getElementById('integrasi-empty-cp').classList.add('hidden'); } else { document.getElementById('integrasi-empty-cp').classList.remove('hidden'); } }
+        function renderHasilIntegrasiTable() { if(hasilCPTerintegrasi && hasilCPTerintegrasi.length) { document.getElementById('result-integrasi-container').classList.remove('hidden'); document.getElementById('table-integrasi-body').innerHTML = hasilCPTerintegrasi.map(r => `<tr><td class="py-2.5 px-3 border-b">${r.no||'-'}</td><td class="py-2.5 px-3 border-b">${r.elemen||'-'}</td><td class="py-2.5 px-3 border-b">${r.capaianPembelajaran||'-'}</td><td class="py-2.5 px-3 border-b">${r.materiEsensial||'-'}</td><td class="py-2.5 px-3 border-b"><span class="bg-blue-100 px-2 py-1 rounded text-xs">${r.dimensiLulusan||'-'}</span></td><td class="py-2.5 px-3 border-b"><span class="bg-blue-100 px-2 py-1 rounded text-xs">${r.nilaiPancaCinta||'-'}</span></td><td class="py-2.5 px-3 border-b italic">${r.catatanIntegrasi||'-'}</td></tr>`).join(''); } else document.getElementById('result-integrasi-container').classList.add('hidden'); }
+        async function prosesGenerateIntegrasi() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            let t = document.querySelector('input[name="sumber-panca"]:checked').value === 'template' ? (templatePancaCinta.find(x=>x.id==document.getElementById('select-template-panca').value)?.isiPanduan||'') : document.getElementById('input-manual-panca').value.trim();
+            document.getElementById('btn-generate-integrasi').disabled = true;
+            try {
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: `CP: ${JSON.stringify(hasilCP)}. Panca: ${t}. Integrasi JSON array murni: no, elemen, capaianPembelajaran, materiEsensial, dimensiLulusan, nilaiPancaCinta, catatanIntegrasi.`}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let txt = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilCPTerintegrasi = JSON.parse(txt); localStorage.setItem('hasilCPTerintegrasi', JSON.stringify(hasilCPTerintegrasi));
+                tambahRiwayat('Integrasi Panca Cinta', document.getElementById('guru-mapel').value || 'Tanpa Mapel');
+                renderHasilIntegrasiTable(); renderPreviewCPTerintegrasi(); updateIndicators();
+            } catch(e) { alert(e.message); } finally { document.getElementById('btn-generate-integrasi').disabled = false; }
+        }
+        document.getElementById('btn-generate-integrasi').addEventListener('click', prosesGenerateIntegrasi);
+
+        // ============ M3: TP & ATP ============
+        function renderPreviewCPTerintegrasi() { if(hasilCPTerintegrasi && hasilCPTerintegrasi.length) { document.getElementById('tpatp-empty-cp').classList.add('hidden'); } else document.getElementById('tpatp-empty-cp').classList.remove('hidden'); }
+        document.getElementsByName('sumber-ppa').forEach(r => r.addEventListener('change', function() { document.getElementById('ui-template-ppa').classList.toggle('hidden', this.value!=='template'); document.getElementById('ui-manual-ppa').classList.toggle('hidden', this.value==='template'); checkFormValidityTpAtp(); }));
+        function populateTemplatePPADropdown() { const sel = document.getElementById('select-template-ppa'); sel.innerHTML = templatePPA.length ? templatePPA.map(i=>`<option value="${i.id}">${i.namaTemplate}</option>`).join('') : '<option value="">-- Kosong --</option>'; }
+        function checkFormValidityTpAtp() { let f=true; document.querySelectorAll('.req-tpatp').forEach(i=>{if(!i.value) f=false;}); document.getElementById('btn-generate-tpatp').disabled = !(f && document.querySelector('input[name="sumber-ppa"]:checked')); }
+        document.querySelectorAll('.req-tpatp').forEach(e => {e.addEventListener('input', checkFormValidityTpAtp); e.addEventListener('change', checkFormValidityTpAtp);});
+        function renderHasilATPTable() { if(hasilATP && hasilATP.length) { document.getElementById('result-tpatp-container').classList.remove('hidden'); let t=0; document.getElementById('table-tpatp-body').innerHTML = hasilATP.map(r => { t+=(parseFloat(r.alokasiJP)||0); return `<tr><td class="py-2.5 px-3 border-b">${r.no||'-'}</td><td class="py-2.5 px-3 border-b">${r.urutanSequence||'-'}</td><td class="py-2.5 px-3 border-b font-bold">${r.kodeTP||'-'}</td><td class="py-2.5 px-3 border-b">${r.tujuanPembelajaran||'-'}</td><td class="py-2.5 px-3 border-b"><span class="bg-blue-100 text-xs px-2 py-1 rounded">${r.dimensiLulusan||'-'}</span></td><td class="py-2.5 px-3 border-b"><span class="bg-blue-100 text-xs px-2 py-1 rounded">${r.nilaiPancaCinta||'-'}</span></td><td class="py-2.5 px-3 border-b">${r.materiPokok||'-'}</td><td class="py-2.5 px-3 border-b">${r.praktikPedagogis||'-'}</td><td class="py-2.5 px-3 border-b text-center">${r.alokasiJP||'-'}</td></tr>`;}).join(''); } else document.getElementById('result-tpatp-container').classList.add('hidden'); }
+        async function prosesGenerateTpAtp() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            let txt = document.querySelector('input[name="sumber-ppa"]:checked').value === 'template' ? (templatePPA.find(t=>t.id==document.getElementById('select-template-ppa').value)?.isiPanduan||'') : document.getElementById('input-manual-ppa').value;
+            document.getElementById('btn-generate-tpatp').disabled = true;
+            try {
+                const pr = `CP: ${JSON.stringify(hasilCPTerintegrasi)}. PPA: ${txt}. Susun TP & ATP JSON array murni: no, kodeTP, tujuanPembelajaran, dimensiLulusan, nilaiPancaCinta, materiPokok, praktikPedagogis, alokasiJP, urutanSequence.`;
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: pr}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let out = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilATP = JSON.parse(out); localStorage.setItem('hasilATP', JSON.stringify(hasilATP));
+                tambahRiwayat('TP & ATP', document.getElementById('input-kelas').value ? 'Kelas ' + document.getElementById('input-kelas').value : 'Tanpa Kelas');
+                renderHasilATPTable(); updateIndicators(); populateTPDropdownRPP(); document.getElementById('result-tpatp-container').scrollIntoView();
+            } catch(e) { alert('Error: '+e.message); } finally { checkFormValidityTpAtp(); }
+        }
+        document.getElementById('btn-generate-tpatp').addEventListener('click', prosesGenerateTpAtp);
+
+        // ============ M4: PROTA ============
+        function renderProtaEmpty() { if(hasilATP && hasilATP.length) { document.getElementById('prota-empty').classList.add('hidden'); } else { document.getElementById('prota-empty').classList.remove('hidden'); } }
+        document.getElementById('btn-hitung-minggu').addEventListener('click', () => {
+            const total = parseInt(document.getElementById('input-total-minggu').value) || 0;
+            const tidakEfektif = parseInt(document.getElementById('input-minggu-tidak-efektif').value) || 0;
+            curTotalMingguEfektif = total - tidakEfektif;
+            if(curTotalMingguEfektif < 0) curTotalMingguEfektif = 0;
+            document.getElementById('jumlah-minggu-efektif').textContent = curTotalMingguEfektif;
+            document.getElementById('hasil-minggu-efektif').classList.remove('hidden');
+        });
+        function renderHasilPROTATable() { if(hasilPROTA && hasilPROTA.length) { document.getElementById('result-prota-container').classList.remove('hidden'); document.getElementById('table-prota-body').innerHTML = hasilPROTA.map(r => `<tr><td class="py-2.5 px-3 border-b">${r.no||'-'}</td><td class="py-2.5 px-3 border-b font-bold">${r.kodeTP||'-'}</td><td class="py-2.5 px-3 border-b">${r.tujuanPembelajaran||'-'}</td><td class="py-2.5 px-3 border-b">${r.materiPokok||'-'}</td><td class="py-2.5 px-3 border-b text-center">${r.jp||'-'}</td><td class="py-2.5 px-3 border-b text-center">${r.minggu||'-'}</td><td class="py-2.5 px-3 border-b">${r.bulan||'-'}</td><td class="py-2.5 px-3 border-b">${r.keterangan||'-'}</td></tr>`).join(''); } else document.getElementById('result-prota-container').classList.add('hidden'); }
+        async function generatePROTA() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            if(!hasilATP || !hasilATP.length) return alert('Data TP & ATP kosong.');
+            if(curTotalMingguEfektif <= 0) return alert('Hitung minggu efektif terlebih dahulu.');
+            document.getElementById('btn-generate-prota').disabled = true;
+            try {
+                const pr = `ATP: ${JSON.stringify(hasilATP)}. Total Minggu Efektif: ${curTotalMingguEfektif}. Semester: ${document.getElementById('input-semester').value || 'Ganjil'}. Susun PROTA JSON array murni: no, kodeTP, tujuanPembelajaran, materiPokok, jp, minggu, bulan, keterangan.`;
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: pr}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let out = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilPROTA = JSON.parse(out); localStorage.setItem('hasilPROTA', JSON.stringify(hasilPROTA));
+                tambahRiwayat('PROTA', document.getElementById('guru-mapel').value || 'Tanpa Mapel');
+                renderHasilPROTATable(); updateIndicators(); document.getElementById('result-prota-container').scrollIntoView();
+            } catch(e) { alert('Error: '+e.message); } finally { document.getElementById('btn-generate-prota').disabled = false; }
+        }
+        document.getElementById('btn-generate-prota').addEventListener('click', generatePROTA);
+
+        // ============ M5: PROSEM ============
+        function renderProsemEmpty() { if(hasilPROTA && hasilPROTA.length) { document.getElementById('prosem-empty').classList.add('hidden'); } else { document.getElementById('prosem-empty').classList.remove('hidden'); } }
+        function renderHasilPROSEMTable() { if(hasilPROSEM && hasilPROSEM.length) { document.getElementById('result-prosem-container').classList.remove('hidden'); document.getElementById('table-prosem-body').innerHTML = hasilPROSEM.map(r => `<tr><td class="py-2.5 px-3 border-b">${r.no||'-'}</td><td class="py-2.5 px-3 border-b font-bold">${r.kodeTP||'-'}</td><td class="py-2.5 px-3 border-b">${r.tujuanPembelajaran||'-'}</td><td class="py-2.5 px-3 border-b">${r.materiPokok||'-'}</td><td class="py-2.5 px-3 border-b text-center">${r.jp||'-'}</td>${['jan','feb','mar','apr','mei','jun','jul','agt','sep','okt','nov','des'].map(m=>`<td class="py-2.5 px-3 border-b text-center text-xs">${r[m]||'-'}</td>`).join('')}</tr>`).join(''); } else document.getElementById('result-prosem-container').classList.add('hidden'); }
+        async function generatePROSEM() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            if(!hasilPROTA || !hasilPROTA.length) return alert('Data PROTA kosong.');
+            document.getElementById('btn-generate-prosem').disabled = true;
+            try {
+                const pr = `PROTA: ${JSON.stringify(hasilPROTA)}. Semester: ${document.getElementById('input-semester').value || 'Ganjil'}. Susun PROSEM JSON array murni: no, kodeTP, tujuanPembelajaran, materiPokok, jp, jan, feb, mar, apr, mei, jun, jul, agt, sep, okt, nov, des.`;
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: pr}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let out = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilPROSEM = JSON.parse(out); localStorage.setItem('hasilPROSEM', JSON.stringify(hasilPROSEM));
+                tambahRiwayat('PROSEM', document.getElementById('guru-mapel').value || 'Tanpa Mapel');
+                renderHasilPROSEMTable(); updateIndicators(); document.getElementById('result-prosem-container').scrollIntoView();
+            } catch(e) { alert('Error: '+e.message); } finally { document.getElementById('btn-generate-prosem').disabled = false; }
+        }
+        document.getElementById('btn-generate-prosem').addEventListener('click', generatePROSEM);
+
+        // ============ M6: KKTP ============
+        function renderKktpEmpty() { if(hasilATP && hasilATP.length) { document.getElementById('kktp-empty').classList.add('hidden'); } else { document.getElementById('kktp-empty').classList.remove('hidden'); } }
+        function renderHasilKKTPTable() { if(hasilKKTP && hasilKKTP.kktp) { document.getElementById('result-kktp-container').classList.remove('hidden'); document.getElementById('table-kktp-body').innerHTML = hasilKKTP.kktp.map(r => `<tr><td class="py-2.5 px-3 border-b">${r.no||'-'}</td><td class="py-2.5 px-3 border-b font-bold">${r.kodeTP||'-'}</td><td class="py-2.5 px-3 border-b">${r.tujuanPembelajaran||'-'}</td><td class="py-2.5 px-3 border-b">${r.kriteriaPenilaian||'-'}</td><td class="py-2.5 px-3 border-b text-center">${r.nilaiMinimal||'-'}</td><td class="py-2.5 px-3 border-b">${r.deskripsiPencapaian||'-'}</td></tr>`).join(''); } else document.getElementById('result-kktp-container').classList.add('hidden'); }
+        async function generateKKTP() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            if(!hasilATP || !hasilATP.length) return alert('Data TP & ATP kosong.');
+            const min = document.getElementById('input-kktp-min').value || 65;
+            const max = document.getElementById('input-kktp-max').value || 100;
+            document.getElementById('btn-generate-kktp').disabled = true;
+            try {
+                const pr = `ATP: ${JSON.stringify(hasilATP)}. Rentang nilai: ${min}-${max}. Susun KKTP JSON: {kktp:[{no, kodeTP, tujuanPembelajaran, kriteriaPenilaian, nilaiMinimal, deskripsiPencapaian}]}.`;
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: pr}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let out = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilKKTP = JSON.parse(out); localStorage.setItem('hasilKKTP', JSON.stringify(hasilKKTP));
+                tambahRiwayat('KKTP', document.getElementById('guru-mapel').value || 'Tanpa Mapel');
+                renderHasilKKTPTable(); updateIndicators(); document.getElementById('result-kktp-container').scrollIntoView();
+            } catch(e) { alert('Error: '+e.message); } finally { document.getElementById('btn-generate-kktp').disabled = false; }
+        }
+        document.getElementById('btn-generate-kktp').addEventListener('click', generateKKTP);
+
+        // ============ M7: MODUL AJAR / RPP ============
+        function renderRppEmpty() { if(hasilATP && hasilATP.length) { document.getElementById('rpp-empty').classList.add('hidden'); } else { document.getElementById('rpp-empty').classList.remove('hidden'); } }
+        function populateTPDropdownRPP() {
+            const sel = document.getElementById('select-tp-rpp');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">-- Pilih Tujuan Pembelajaran --</option>';
+            if(hasilATP && hasilATP.length) hasilATP.forEach((tp, i) => { sel.innerHTML += `<option value="${i}">${tp.kodeTP||'TP'+(i+1)} - ${tp.tujuanPembelajaran||'Tanpa deskripsi'}</option>`; });
+        }
+        function renderHasilRPPView() {
+            if(hasilRPP) {
+                document.getElementById('result-rpp-container').classList.remove('hidden');
+                document.getElementById('rpp-identitas').innerHTML = '<h4 class="font-semibold mb-2">Identitas</h4>' + (hasilRPP.identitas ? `<p class="text-sm">${hasilRPP.identitas.replace(/\n/g,'<br>')}</p>` : '<p class="text-sm text-slate-400">-</p>');
+                document.getElementById('rpp-komponen-inti').innerHTML = '<h4 class="font-semibold mb-2">Komponen Inti</h4>' + (hasilRPP.komponenInti ? `<p class="text-sm">${hasilRPP.komponenInti.replace(/\n/g,'<br>')}</p>` : '<p class="text-sm text-slate-400">-</p>');
+                document.getElementById('rpp-kegiatan').innerHTML = '<h4 class="font-semibold mb-2">Kegiatan Pembelajaran</h4>' + (hasilRPP.kegiatan ? `<p class="text-sm">${hasilRPP.kegiatan.replace(/\n/g,'<br>')}</p>` : '<p class="text-sm text-slate-400">-</p>');
+                document.getElementById('rpp-asesmen').innerHTML = '<h4 class="font-semibold mb-2">Asesmen</h4>' + (hasilRPP.asesmen ? `<p class="text-sm">${hasilRPP.asesmen.replace(/\n/g,'<br>')}</p>` : '<p class="text-sm text-slate-400">-</p>');
+            } else { document.getElementById('result-rpp-container').classList.add('hidden'); }
+        }
+        async function generateRPP() {
+            const api = getApiKeyForCurrentUser(); if(!api) return alert('API Key belum diatur.');
+            const idx = document.getElementById('select-tp-rpp').value;
+            if(idx === '') return alert('Pilih Tujuan Pembelajaran terlebih dahulu.');
+            const tp = hasilATP[parseInt(idx)];
+            document.getElementById('btn-generate-rpp').disabled = true;
+            try {
+                const pr = `Buatkan Modul Ajar/RPP dari TP: ${JSON.stringify(tp)}. Konteks: Sekolah ${document.getElementById('input-sekolah').value||'-'}, Kelas ${document.getElementById('input-kelas').value||'-'}, Semester ${document.getElementById('input-semester').value||'-'}. Format JSON: {identitas, komponenInti, kegiatan, asesmen}.`;
+                const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + api, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents:[{parts:[{text: pr}]}] }) });
+                if(!res.ok) throw new Error('API Error'); let out = (await res.json()).candidates[0].content.parts[0].text.replace(/^\s*[\`]{3}(?:json)?/im, '').replace(/[\`]{3}\s*$/m, '').trim();
+                hasilRPP = JSON.parse(out); localStorage.setItem('hasilRPP', JSON.stringify(hasilRPP));
+                tambahRiwayat('Modul Ajar/RPP', tp.kodeTP || 'TP');
+                renderHasilRPPView(); updateIndicators(); document.getElementById('result-rpp-container').scrollIntoView();
+            } catch(e) { alert('Error: '+e.message); } finally { document.getElementById('btn-generate-rpp').disabled = false; }
+        }
+        document.getElementById('btn-generate-rpp').addEventListener('click', generateRPP);
+
+        // ============ EXPORT HELPERS ============
+        function applyExportStyle(html) { return `<style>table{border-collapse:collapse;width:100%;font-family:sans-serif;font-size:12px;margin-bottom:20px}th,td{border:1px solid #000;padding:8px;text-align:left;vertical-align:top;color:#000}th{background-color:#f1f5f9;font-weight:bold}</style>` + html; }
+        async function salinTabelRapi(elementId, btn) {
+            try {
+                const el = document.getElementById(elementId); if (!el) return;
+                const htmlStr = applyExportStyle(el.outerHTML);
+                const plainText = el.innerText || '';
+                const item = new ClipboardItem({ 'text/html': new Blob([htmlStr], { type: 'text/html' }), 'text/plain': new Blob([plainText], { type: 'text/plain' }) });
+                await navigator.clipboard.write([item]);
+                const orig = btn.innerHTML; btn.innerHTML = '✓ Tersalin!'; setTimeout(() => btn.innerHTML = orig, 2000);
+            } catch (err) { alert('Gagal menyalin (Clipboard API diblokir).'); }
+        }
+        function downloadWord(elementId, fileName) {
+            const el = document.getElementById(elementId); if(!el) return;
+            const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${fileName}</title></head><body>${applyExportStyle(el.outerHTML)}</body></html>`;
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = fileName + '.doc'; link.click();
+        }
+        function downloadExcel(elementId, fileName) {
+            const el = document.getElementById(elementId); if(!el) return;
+            const html = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body>${applyExportStyle(el.outerHTML)}</body></html>`;
+            const blob = new Blob(['\ufeff', html], { type: 'application/vnd.ms-excel' });
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = fileName + '.xls'; link.click();
+        }
+
+        // ============ INIT ============
+        checkSession();
+    </script>
+</body>
+</html>
